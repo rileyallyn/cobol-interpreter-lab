@@ -13,7 +13,7 @@ WORKING-STORAGE SECTION.
     05  WS-INDEX        PIC S9(4) COMP.
 
 PROCEDURE DIVISION.
-*> * Initialize test data
+*> Initialize test data
     MOVE "30" TO WS-SORT-ROW(1)
     MOVE "10" TO WS-SORT-ROW(2)
     MOVE "50" TO WS-SORT-ROW(3)
