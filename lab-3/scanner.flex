@@ -29,6 +29,12 @@ END-PERFORM { return TOKEN_END_PERFORM; }
 IF { return TOKEN_IF; }
 END-IF { return TOKEN_END_IF; }
 SPACE { return TOKEN_SPACE; }
+PIC { return TOKEN_PICTURE; }
+OCCURS { return TOKEN_KEYWORD_OCCURS; }
+VALUE { return TOKEN_KEYWORD_VALUE; }
+X { return TOKEN_ALPHANUMERIC; }
+S9 { return TOKEN_SIGNED_NUMERIC; }
+9 { return TOKEN_NUMERIC; }
 
 \+ { return TOKEN_ADD; }
 \- { return TOKEN_SUB; }
