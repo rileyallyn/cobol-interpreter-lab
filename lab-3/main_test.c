@@ -48,6 +48,16 @@ UTEST(scanner, assignment) {
   yy_delete_buffer(buffer);
 }
 
+UTEST(scanner, hello) {
+  struct token_st tokens[] = {
+    {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
+    {TOKEN_PROGRAM_ID, "PROGRAM-ID. HELLO-WORLD."}
+    {TOKEN_PROCEDURE_DIVISION, "PROCEDURE DIVISION."},
+    {TOKEN_STRING, "Hello World!"},
+    {TOKEN_KEYWORD_PRINT, "DISPLAY"},
+    {TOKEN_EOF, "STOP RUN."},
+  };
+
 UTEST(scanner, sample) {
   struct token_st tokens[] = {
     {TOKEN_IDENT, "answer"},

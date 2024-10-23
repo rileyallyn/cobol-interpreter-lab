@@ -1,11 +1,11 @@
 %{
 #include "token.h"
 %}
-DIGIT [0-9]
-LETTER [a-zA-Z]
-NAME [a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]
+NAME [a-zA-Z]([a-zA-Z0-9_-]*[a-zA-Z0-9])?
+DIGIT [0-9]+
 
 %%
+
 (" "|\t|\n) /* skip whitespace */
 \*>\ ?.* { return TOKEN_COMMENT; }
 IDENTIFICATION { return TOKEN_IDENTIFICATION; }
@@ -32,23 +32,34 @@ SPACE { return TOKEN_SPACE; }
 PIC { return TOKEN_PICTURE; }
 OCCURS { return TOKEN_KEYWORD_OCCURS; }
 VALUE { return TOKEN_KEYWORD_VALUE; }
+COMPUTE { return TOKEN_KEYWORD_COMPUTE; }
+FUNCTION { return TOKEN_KEYWORD_FUNCTION; }
 X { return TOKEN_ALPHANUMERIC; }
 S9 { return TOKEN_SIGNED_NUMERIC; }
 9 { return TOKEN_NUMERIC; }
+V9 { return TOKEN_IMPLIED_DECIMAL; }
+COMP { return TOKEN_COMPUTATION_LEVEL_0; }
+COMP-1 { return TOKEN_COMPUTATION_LEVEL_1; }
+COMP-2 { return TOKEN_COMPUTATION_LEVEL_2; }
+COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 
+{DIGIT} { return TOKEN_INTEGER; }
+{NAME} { return TOKEN_IDENT; }
 \+ { return TOKEN_ADD; }
 \- { return TOKEN_SUB; }
+\*\* { return TOKEN_EXPONENTIAL; }
+\* { return TOKEN_MULTIPLY; }
+\/ { return TOKEN_DIVIDE; }
 \> { return TOKEN_GREATER_THAN; }
 \< { return TOKEN_LESS_THAN; }
+\= { return TOKEN_EQUAL;}
 
 "\""[^"]*"\""   { return TOKEN_STRING; }
 "\'"[^']*"\'"   { return TOKEN_STRING; }
 "("             { return TOKEN_LEFT_PARENTHESIS; }
 ")"             { return TOKEN_RIGHT_PARENTHESIS; }
 
-
 \. { return TOKEN_DOT; }
-{NAME} { return TOKEN_IDENT; }
-{DIGIT} { return TOKEN_INTEGER; }
+
 %%
 int yywrap() { return 1; }
