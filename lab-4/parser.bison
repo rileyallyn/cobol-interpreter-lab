@@ -60,22 +60,9 @@ int yylex();
 %token TOKEN_EXPONENTIAL
 
 %%
-program : expr TOKEN_SEMI;
 
-expr : expr TOKEN_PLUS term
-    | expr TOKEN_MINUS term
-    | term
-    ;
 
-term : term TOKEN_MUL factor
-    | term TOKEN_DIV factor
-    | factor
-    ;
 
-factor: TOKEN_MINUS factor
-    | TOKEN_LPAREN expr TOKEN_RPAREN
-    | TOKEN_INT
-    ;
 %%
 void yyerror(const char* msg) {
     fprintf(stderr, "Error | Line: %d\n%s\n",yylineno,msg);
