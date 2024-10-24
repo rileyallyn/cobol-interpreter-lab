@@ -1,3 +1,4 @@
+---
 lab_3_tests:
   stage: test
   image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/cpp
@@ -12,3 +13,15 @@ lab_3_tests:
     - gcc main_test.c scanner.c -o scanner_test.out
     - echo "Lab 3 - Run Tests"
     - ./scanner_test.out
+
+lab_4_tests:
+  stage: test
+  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/cpp
+  script:
+    - apt update
+    - apt install -y flex bison
+    - bison --version
+    - cd lab-4
+    - echo "Lab 4 - Bison Parser"
+    - make test
+    - ./parser_test.out

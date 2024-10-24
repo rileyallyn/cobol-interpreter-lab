@@ -18,30 +18,6 @@ struct token_st {
   char *p;
 };
 
-// UTEST(scanner, identifier) {
-//   token_t t;
-//   // Must include the null character to terminate input
-//   char string[] = "test\0"; 
-//   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
-
-//   ASSERT_EQ(TOKEN_EOF, (t = yylex()));
-//   ASSERT_STREQ("", yytext);
-
-//   yy_delete_buffer(buffer);
-// }
-
-// UTEST(scanner, assignment) {
-//   token_t t;
-//   // Must include the null character to terminate input
-//   char string[] = "=\0"; 
-//   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
-
-//   ASSERT_EQ(TOKEN_EOF, (t = yylex()));
-//   ASSERT_STREQ("", yytext);
-
-//   yy_delete_buffer(buffer);
-// }
-
 UTEST(scanner, hello) {
   struct token_st tokens[] = {
     {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
@@ -64,12 +40,11 @@ UTEST(scanner, hello) {
 
 
   yyin = fopen("samples/hello-world.cbl", "r");
-  yyrestart(yyin);
   ASSERT_TRUE(yyin);
-
   int index = 0;
   token_t t;
   do {
+    printf("index: %d token: %d text: %s\n", index, t, yytext);
     ASSERT_EQ(tokens[index].t, (t = yylex()));
     ASSERT_STREQ(tokens[index].p, yytext);
     ++index;
