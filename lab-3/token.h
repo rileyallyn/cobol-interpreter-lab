@@ -31,6 +31,7 @@ typedef enum {
 
   // Identifiers
   TOKEN_IDENT,
+
   // Data types
   TOKEN_STRING,
   TOKEN_INTEGER,

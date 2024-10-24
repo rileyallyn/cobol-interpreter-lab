@@ -8,7 +8,7 @@ extern char *yytext;
 
 int main(int argc, char *argv[]) {
   FILE *file;
-  const char *filename = "samples/quadratic-snippet.cbl"; // Default filename
+  const char *filename = "samples/hello-world.cbl"; // Default filename
 
   // Check if a filename is provided as a command-line argument
   if (argc > 1) {
