@@ -43,7 +43,7 @@ UTEST(scanner, hello) {
   int index = 0;
   token_t t;
   do {
-    printf("index: %d token: %d text: %s\n", index, t, yytext);
+    // printf("index: %d token: %d text: %s\n", index, t, yytext);
     ASSERT_EQ(tokens[index].t, (t = yylex()));
     ASSERT_STREQ(tokens[index].p, yytext);
     ++index;
