@@ -27,6 +27,8 @@ PERFORM { return TOKEN_PERFORM; }
 END-PERFORM { return TOKEN_END_PERFORM; }
 IF { return TOKEN_IF; }
 END-IF { return TOKEN_END_IF; }
+ELSE { return TOKEN_ELSE; }
+ELSE-IF { return TOKEN_ELSE_IF; }
 SPACE { return TOKEN_SPACE; }
 PIC { return TOKEN_PICTURE; }
 OCCURS { return TOKEN_KEYWORD_OCCURS; }

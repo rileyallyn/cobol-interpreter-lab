@@ -28,6 +28,8 @@ int yylex();
 %token TOKEN_UNTIL
 %token TOKEN_END_PERFORM
 %token TOKEN_IF
+%token TOKEN_ELSE
+%token TOKEN_ELSE_IF
 %token TOKEN_END_IF
 %token TOKEN_SPACE
 %token TOKEN_KEYWORD_OCCURS
