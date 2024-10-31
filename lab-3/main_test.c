@@ -38,6 +38,7 @@ UTEST(scanner, hello) {
     {TOKEN_EOF, ""},
   };
 
+
   yyin = fopen("samples/hello-world.cbl", "r");
   ASSERT_TRUE(yyin);
   int index = 0;

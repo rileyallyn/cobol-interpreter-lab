@@ -58,9 +58,32 @@ int yylex();
 %token TOKEN_GREATER_THAN
 %token TOKEN_LESS_THAN
 %token TOKEN_EXPONENTIAL
+%token TOKEN_DISPLAY
 
 %%
-
+file            : statements     
+statements      : statements statement
+                | statement
+                ;
+statement       : section
+                | sect_data
+                | simple_stmt
+                ;
+section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
+                | type TOKEN_RUN TOKEN_DOT
+                ;
+sect_data       : TOKEN_PROGRAM_ID  TOKEN_DOT TOKEN_IDENT TOKEN_DOT
+                ;
+type            : TOKEN_IDENTIFICATION
+                | TOKEN_PROCEDURE
+                | TOKEN_STOP
+                ;
+simple_stmt     : function
+                ;
+function        : TOKEN_DISPLAY parms
+                ;
+parms           : TOKEN_STRING
+                ;
 
 
 %%
