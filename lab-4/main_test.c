@@ -55,4 +55,31 @@ UTEST(parser, hello) {
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
 }
-  
+
+UTEST(parser, print) {
+  // Must include the null character to terminate input
+  char string[] = "DISPLAY 'Hello World!'\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0); 
+}
+
+UTEST(parser, branching) {
+  // Must include the null character to terminate input
+  char string[] = "IF A > B THEN DISPLAY 'A is greater than B' ELSE DISPLAY 'B is greater than A'\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0); 
+}  
