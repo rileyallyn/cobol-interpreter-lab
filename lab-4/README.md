@@ -21,7 +21,6 @@ bison --defines=token.h --output=parser.c -v parser.bison
 
 THe `-v` flag will create a `parser.output` which represents the grammar in text form.
 
-
 ### Running the Parser
 
 Then build the `main.c`, `parcer.c` and `scanner.c` using **gcc**.
@@ -38,7 +37,6 @@ For example here is a command for `samples/program.c`
 ./parser.out < samples/program.c
 ```
 
-
 ### Testing the Parser
 
 Then build the `main_test.c`, `parcer.c` and `scanner.c` using **gcc**.
@@ -54,43 +52,41 @@ Then execute the test suite using `./parser_test.out`.
 ./parser_test.out
 ```
 
-
 ### Using Make
 
 Alternatively you can use the supplied make file.
 
-* Build main program - `make`
-* Build test program - `make test`
-* Clean up build files - `make clean`
-
+- Build main program - `make`
+- Build test program - `make test`
+- Clean up build files - `make clean`
 
 ## Tests
 
-* Write test for various statements in your language 
-  * assignment
-  * print
-  * mathmatical expressions
-  * boolean expressions
-  * branching
-  * looping
-* Write a test for each sample test file.
-  * Hello World!
-  * Quadratic
-  * Sorting
-
+- Write test for various statements in your language
+  - assignment - Riley
+  - print - Josh (write test)
+  - mathmatical expressions - Jenessy
+  - boolean expressions - Jenessy
+  - branching - Josh
+  - looping - Riley
+- Write a test for each sample test file.
+  - Hello World! - Josh (already done)
+  - Quadratic - Jenessy
+  - Sorting - Riley
 
 ## Grading Rubric
 
 The grading will be over the following categories.
 
-Points      Description
------------ ------------------------------------
-60 points   Ability to parse — Six different language statements
-10 points   Ability to parse — Hello world
-10 points   Ability to parse — Quadratic equation
-10 points   Ability to parse — Integer sorting
-10 points   Report formatting and readability
+Points Description
 
+---
+
+60 points Ability to parse — Six different language statements
+10 points Ability to parse — Hello world
+10 points Ability to parse — Quadratic equation
+10 points Ability to parse — Integer sorting
+10 points Report formatting and readability
 
 ## Turn In
 
