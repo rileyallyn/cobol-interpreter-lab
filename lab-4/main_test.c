@@ -43,9 +43,9 @@ UTEST(parser, missing_semi_colon) {
   ASSERT_EQ(result, 1); 
 }
 
-UTEST(parser, sample) {
+UTEST(parser, hello) {
   // Read sample file as input
-  yyin = fopen("samples/program.c", "r");
+  yyin = fopen("samples/hello-world.cbl", "r");
   yyrestart(yyin);
   ASSERT_TRUE(yyin);
 
@@ -55,3 +55,4 @@ UTEST(parser, sample) {
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
 }
+  

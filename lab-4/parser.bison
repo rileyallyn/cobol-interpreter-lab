@@ -77,6 +77,7 @@ sect_data       : TOKEN_PROGRAM_ID  TOKEN_DOT TOKEN_IDENT TOKEN_DOT
 type            : TOKEN_IDENTIFICATION
                 | TOKEN_PROCEDURE
                 | TOKEN_STOP
+                | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : function
                 ;
