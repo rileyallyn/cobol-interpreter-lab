@@ -64,9 +64,9 @@ Alternatively you can use the supplied make file.
 
 - Write test for various statements in your language
   - assignment - Riley
-  - print - Jenessy
-  - mathmatical expressions - Josh
-  - boolean expressions Jenessy
+  - print - Josh (write test)
+  - mathmatical expressions - Jenessy
+  - boolean expressions - Jenessy
   - branching - Josh
   - looping - Riley
 - Write a test for each sample test file.
