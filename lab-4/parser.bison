@@ -68,6 +68,7 @@ statements      : statements statement
 statement       : section
                 | sect_data
                 | simple_stmt
+                | data_space
                 ;
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                 | type TOKEN_RUN TOKEN_DOT
@@ -80,11 +81,28 @@ type            : TOKEN_IDENTIFICATION
                 | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : function
+                | TOKEN_KEYWORD_FUNCTION cbl_function
+                ;
+cbl_function    : TOKEN_KEYWORD_COMPUTE parms
                 ;
 function        : TOKEN_DISPLAY parms
+                | function simple_stmt 
+                | if_branch
                 ;
 parms           : TOKEN_STRING
                 ;
+if_branch       : if_branch parms if_branch
+                | TOKEN_IF
+                | TOKEN_ELSE_IF
+                | TOKEN_ELSE
+                | TOKEN_END_IF
+                ;
+data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
+                ;
+
+
+
+
 
 
 %%
