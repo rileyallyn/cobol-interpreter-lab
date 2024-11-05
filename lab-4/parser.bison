@@ -71,6 +71,7 @@ statement       : section
                 | sect_data
                 | simple_stmt
                 | data_space
+                | data_declaration
                 ;
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                 | type TOKEN_RUN TOKEN_DOT
@@ -99,9 +100,41 @@ if_branch       : if_branch parms if_branch
                 | TOKEN_ELSE
                 | TOKEN_END_IF
                 ;
-data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
+data_space      : TOKEN_WORKING_STORAGE 
+                | TOKEN_KEYWORD_SECTION 
+                | TOKEN_DOT
+                ;
+data_category   : TOKEN_ALPHANUMERIC 
+                | TOKEN_NUMERIC 
+                | TOKEN_SIGNED_NUMERIC
+                | TOKEN_IMPLIED_DECIMAL
+                ;
+categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
                 ;
 
+complete_category: complete_category complete_category  
+                | data_category categry_contain
+                ;
+data_clause     : TOKEN_COMPUTATION_LEVEL_0 
+                | TOKEN_COMPUTATION_LEVEL_1 
+                | TOKEN_COMPUTATION_LEVEL_2 
+                | TOKEN_COMPUTATION_LEVEL_3
+                | TOKEN_KEYWORD_VALUE
+                | TOKEN_KEYWORD_OCCURS
+                ;
+full_data_clause: data_clause data_clause
+                | data_clause
+                ;
+
+data_declaration: simple_decl
+                | full_decl
+                ;
+simple_decl     : TOKEN_INTEGER TOKEN_IDENT TOKEN_DOT
+                ;
+full_decl       : TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_INTEGER TOKEN_DOT
+                ;
 
 
 
