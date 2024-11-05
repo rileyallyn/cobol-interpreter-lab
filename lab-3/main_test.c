@@ -180,7 +180,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_COMMENT, "*> program begins here"},
     {TOKEN_DISPLAY, "DISPLAY"},
     {TOKEN_STRING, "'EQUATION: (1x^2) + 5x + 6 = 0'"},
-    {TOKEN_COMPUTE, "COMPUTE"},
+    {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "discriminant"},
     {TOKEN_EQUAL, "="},
     {TOKEN_LEFT_PARENTHESIS, "("},
@@ -204,7 +204,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_GREATER_THAN, ">"},
     {TOKEN_INTEGER, "0"},
 
-    {TOKEN_COMPUTE, "COMPUTE"},
+    {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "square-root-discriminant"},
     {TOKEN_EQUAL, "="},
     {TOKEN_KEYWORD_FUNCTION, "FUNCTION"},
@@ -214,7 +214,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_RIGHT_PARENTHESIS, ")"},
 
 
-    {TOKEN_COMPUTE, "COMPUTE"},
+    {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "root1"},
     {TOKEN_EQUAL, "="},
     {TOKEN_LEFT_PARENTHESIS, "("},
@@ -229,7 +229,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_IDENT, "a"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
 
-    {TOKEN_COMPUTE, "COMPUTE"},
+    {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "root2"},
     {TOKEN_EQUAL, "="},
     {TOKEN_LEFT_PARENTHESIS, "("},
@@ -263,7 +263,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_EQUAL, "="},
     {TOKEN_INTEGER, "0"},
 
-    {TOKEN_COMPUTE, "COMPUTE"},
+    {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "root1"},
     {TOKEN_EQUAL, "="},
     {TOKEN_SIGNED_NUMERIC, "-b"},
