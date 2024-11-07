@@ -10,7 +10,7 @@ int yylex();
 %define parse.error detailed
 
 %token TOKEN_EOF
-%token TOKEN_IDENTIFICATION
+%token TOKEN_KEYWORD_IDENTIFICATION
 %token TOKEN_KEYWORD_DIVISION
 %token TOKEN_KEYWORD_DATA
 %token TOKEN_KEYWORD_SECTION
@@ -69,40 +69,77 @@ statement       : section
                 | sect_data
                 | simple_stmt
                 | data_space
+                | data_declaration
                 ;
+                
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                 | type TOKEN_RUN TOKEN_DOT
                 ;
-sect_data       : TOKEN_PROGRAM_ID  TOKEN_DOT TOKEN_IDENT TOKEN_DOT
+sect_data       : TOKEN_PROGRAM_ID TOKEN_DOT TOKEN_IDENT TOKEN_DOT
                 ;
-type            : TOKEN_IDENTIFICATION
+type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_PROCEDURE
                 | TOKEN_STOP
                 | TOKEN_KEYWORD_DATA
                 ;
-simple_stmt     : function
-                | TOKEN_KEYWORD_FUNCTION cbl_function
+simple_stmt     : cbl_function
+                | cbl_function param
+                | cbl_function assignment_stmt
+                | cbl_function param assignment_stmt
                 ;
-cbl_function    : TOKEN_KEYWORD_COMPUTE parms
+assignment_stmt : TOKEN_EQUAL ext_function
+                | TOKEN_KEYWORD_TO TOKEN_IDENT
+                | TOKEN_KEYWORD_TO TOKEN_IDENT categry_contain
                 ;
-function        : TOKEN_DISPLAY parms
-                | function simple_stmt 
-                | if_branch
+param           : TOKEN_IDENT
+                | TOKEN_STRING
                 ;
-parms           : TOKEN_STRING
+ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
-if_branch       : if_branch parms if_branch
+cbl_function    : TOKEN_DISPLAY
+                | TOKEN_MOVE
+                | TOKEN_KEYWORD_COMPUTE
+                | TOKEN_PERFORM
+                ;
+if_branch       : if_branch param if_branch
                 | TOKEN_IF
                 | TOKEN_ELSE_IF
                 | TOKEN_ELSE
                 | TOKEN_END_IF
                 ;
-data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
+data_space      : TOKEN_WORKING_STORAGE 
+                | TOKEN_KEYWORD_SECTION 
+                | TOKEN_DOT
                 ;
-
-
-
-
+data_category   : TOKEN_ALPHANUMERIC 
+                | TOKEN_NUMERIC 
+                | TOKEN_SIGNED_NUMERIC
+                | TOKEN_IMPLIED_DECIMAL
+                ;
+categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
+                ;
+complete_category: complete_category complete_category  
+                | data_category categry_contain
+                ;
+data_clause     : TOKEN_COMPUTATION_LEVEL_0 
+                | TOKEN_COMPUTATION_LEVEL_1 
+                | TOKEN_COMPUTATION_LEVEL_2 
+                | TOKEN_COMPUTATION_LEVEL_3
+                | TOKEN_KEYWORD_VALUE
+                | TOKEN_KEYWORD_OCCURS
+                ;
+full_data_clause: data_clause data_clause
+                | data_clause
+                ;
+simple_decl     : TOKEN_INTEGER TOKEN_IDENT TOKEN_DOT
+                ;
+full_decl       : TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_INTEGER TOKEN_DOT
+                ;
+data_declaration: simple_decl
+                | full_decl
+                ;
 
 
 %%
