@@ -83,3 +83,42 @@ UTEST(parser, branching) {
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
 }  
+
+UTEST(parser, assignment) {
+  char string[] = "MOVE 1 TO A\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0);
+}
+
+UTEST(parser, looping) {
+  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10 MOVE I TO A(I)\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0);
+}
+
+UTEST(parser, sorting) {
+  // Read sample file as input
+  yyin = fopen("samples/sorting-snippet.cbl", "r");
+  yyrestart(yyin);
+  ASSERT_TRUE(yyin);
+
+  yylineno = 1;
+  int result = yyparse();
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0); 
+}
