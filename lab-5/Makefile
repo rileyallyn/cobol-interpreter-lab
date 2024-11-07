@@ -1,8 +1,11 @@
 
-# The top level rule indicates how to link everything together into calc
+# The top level rule indicates how to link everything together into main
 
 main: main.o symbol_map.o expr.o scanner.o parser.o
 	gcc main.o symbol_map.o expr.o scanner.o parser.o -o interpreter.out -lm
+
+test: main_test.o symbol_map.o expr.o scanner.o parser.o
+	gcc main_test.o symbol_map.o expr.o scanner.o parser.o -o interpreter_test.out -lm
 
 # This pattern indicates that any .o file depends
 # upon the .c file of the same name, and all of the .h files.
@@ -22,5 +25,5 @@ parser.c parser.h: parser.bison
 # clean causes all intermediate files to be deleted.
 
 clean:
-	rm -f parser.c parser.output parser.h scanner.c *.o interpreter.out
+	rm -f parser.c parser.output parser.h scanner.c *.o interpreter.out interpreter_test.out test_evaluate.txt test_print.txt
 
