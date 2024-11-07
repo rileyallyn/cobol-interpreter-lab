@@ -25,3 +25,15 @@ lab_4_tests:
     - echo "Lab 4 - Bison Parser"
     - make test
     - ./parser_test.out
+
+lab_5_tests:
+  stage: test
+  image: gitlab.cs.wallawalla.edu:5050/cs_department/docker-images/cpp
+  script:
+    - apt update
+    - apt install -y flex bison
+    - bison --version
+    - cd lab-5
+    - echo "Lab 5 - Interpreter"
+    - make test
+    - ./interpreter_test.out
