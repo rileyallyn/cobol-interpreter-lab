@@ -27,7 +27,8 @@ PERFORM { return TOKEN_PERFORM; }
 END-PERFORM { return TOKEN_END_PERFORM; }
 IF { return TOKEN_IF; }
 END-IF { return TOKEN_END_IF; }
-SPACE { return TOKEN_SPACE; }
+ELSE { return TOKEN_ELSE; }
+SPACE { return TOKEN_SPACE; } 
 PIC { return TOKEN_PICTURE; }
 OCCURS { return TOKEN_KEYWORD_OCCURS; }
 VALUE { return TOKEN_KEYWORD_VALUE; }
@@ -42,6 +43,7 @@ COMP-1 { return TOKEN_COMPUTATION_LEVEL_1; }
 COMP-2 { return TOKEN_COMPUTATION_LEVEL_2; }
 COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 
+
 {DIGIT} { return TOKEN_INTEGER; }
 {NAME} { return TOKEN_IDENT; }
 \+ { return TOKEN_ADD; }
@@ -52,6 +54,7 @@ COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 \> { return TOKEN_GREATER_THAN; }
 \< { return TOKEN_LESS_THAN; }
 \= { return TOKEN_EQUAL;}
+
 
 "\""[^"]*"\""   { return TOKEN_STRING; }
 "\'"[^']*"\'"   { return TOKEN_STRING; }
