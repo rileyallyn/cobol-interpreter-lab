@@ -53,6 +53,9 @@ UTEST(scanner, hello) {
 
 UTEST(scanner, quadratic) {
   struct token_st tokens[] = {
+    {TOKEN_COMMENT, "*> Code altered from https://www.quora.com/What-is-a-COBOL-program-that-will-solve-a-quadratic-equation"},
+    {TOKEN_COMMENT, "*> Program finds the roots to a simple quadratic equation"},
+
     {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
@@ -64,18 +67,18 @@ UTEST(scanner, quadratic) {
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_WORKING_STORAGE, "WORKING_STORAGE,"},
+    {TOKEN_WORKING_STORAGE, "WORKING-STORAGE"},
     {TOKEN_KEYWORD_SECTION, "SECTION"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "a"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"}, // Check later
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
@@ -84,14 +87,14 @@ UTEST(scanner, quadratic) {
     {TOKEN_INTEGER, "1"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "b"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
@@ -100,14 +103,14 @@ UTEST(scanner, quadratic) {
     {TOKEN_INTEGER, "5"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "c"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
@@ -116,63 +119,63 @@ UTEST(scanner, quadratic) {
     {TOKEN_INTEGER, "6"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "discriminant"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
     {TOKEN_COMPUTATION_LEVEL_3, "COMP-3"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "root1"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
     {TOKEN_COMPUTATION_LEVEL_3, "COMP-3"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "root2"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
     {TOKEN_COMPUTATION_LEVEL_3, "COMP-3"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_LEVEL_NUM, "77"},
+    {TOKEN_INTEGER, "77"},
     {TOKEN_IDENT, "square-root-discriminant"},
     {TOKEN_PICTURE, "PIC"},
-    {TOKEN_NUMERIC, "S9"},
+    {TOKEN_SIGNED_NUMERIC, "S9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
-    {TOKEN_NUMERIC, "V9"},
+    {TOKEN_IMPLIED_DECIMAL, "V9"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "5"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
     {TOKEN_COMPUTATION_LEVEL_3, "COMP-3"},
     {TOKEN_DOT, "."},
 
-    {TOKEN_EOF, ""},
+    // {TOKEN_EOF, ""},
 
     {TOKEN_PROCEDURE, "PROCEDURE"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
@@ -197,7 +200,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_IDENT, "c"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
 
-    {TOKEN_EOF, ""},
+    // {TOKEN_EOF, ""},
 
     {TOKEN_IF, "IF"},
     {TOKEN_IDENT, "discriminant"},
@@ -218,7 +221,8 @@ UTEST(scanner, quadratic) {
     {TOKEN_IDENT, "root1"},
     {TOKEN_EQUAL, "="},
     {TOKEN_LEFT_PARENTHESIS, "("},
-    {TOKEN_SIGNED_NUMERIC, "-b"},
+    {TOKEN_SUB, "-"},
+    {TOKEN_IDENT, "b"},
     {TOKEN_ADD, "+"},
     {TOKEN_IDENT, "square-root-discriminant"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
@@ -233,7 +237,8 @@ UTEST(scanner, quadratic) {
     {TOKEN_IDENT, "root2"},
     {TOKEN_EQUAL, "="},
     {TOKEN_LEFT_PARENTHESIS, "("},
-    {TOKEN_SIGNED_NUMERIC, "-b"},
+    {TOKEN_SUB, "-"},
+    {TOKEN_IDENT, "b"},
     {TOKEN_SUB, "-"},
     {TOKEN_IDENT, "square-root-discriminant"},
     {TOKEN_RIGHT_PARENTHESIS, ")"},
@@ -255,7 +260,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_STRING, "'Root 2: '"},
     {TOKEN_IDENT, "root2"},
 
-    {TOKEN_EOF, ""},
+    // {TOKEN_EOF, ""},
 
     {TOKEN_ELSE, "ELSE"},
     {TOKEN_IF, "IF"},
@@ -266,7 +271,8 @@ UTEST(scanner, quadratic) {
     {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "root1"},
     {TOKEN_EQUAL, "="},
-    {TOKEN_SIGNED_NUMERIC, "-b"},
+    {TOKEN_SUB, "-"},
+    {TOKEN_IDENT, "b"},
     {TOKEN_DIVIDE, "/"},
     {TOKEN_LEFT_PARENTHESIS, "("},
     {TOKEN_INTEGER, "2"},
@@ -279,7 +285,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_STRING, "'The equation has one real root: '"},
 
     {TOKEN_DISPLAY, "DISPLAY"},   
-    {TOKEN_STRING, "Root:"},
+    {TOKEN_STRING, "'Root: '"},
     {TOKEN_IDENT, "root1"},
 
 
@@ -288,7 +294,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_DISPLAY, "DISPLAY"},
     {TOKEN_STRING, "'The equation has no real roots.'"},
 
-    {TOKEN_EOF, ""},
+    // {TOKEN_EOF, ""},
 
     {TOKEN_STOP, "STOP"},
     {TOKEN_RUN, "RUN"},
@@ -301,7 +307,7 @@ UTEST(scanner, quadratic) {
   int index = 0;
   token_t t;
   do {
-    // printf("index: %d token: %d text: %s\n", index, t, yytext);
+    printf("index: %d token: %d text: %s\n", index, t, yytext);
     ASSERT_EQ(tokens[index].t, (t = yylex()));
     ASSERT_STREQ(tokens[index].p, yytext);
     ++index;
