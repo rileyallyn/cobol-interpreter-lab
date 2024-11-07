@@ -85,25 +85,25 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : cbl_function
-                | cbl_function params
+                | cbl_function param
                 | cbl_function assignment_stmt
-                | cbl_function params assignment_stmt
+                | cbl_function param assignment_stmt
                 ;
 assignment_stmt : TOKEN_EQUAL ext_function
                 | TOKEN_KEYWORD_TO TOKEN_IDENT
                 | TOKEN_KEYWORD_TO TOKEN_IDENT categry_contain
                 ;
-params:         : TOKEN_IDENT
+param           : TOKEN_IDENT
                 | TOKEN_STRING
                 ;
-ext_function:   : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
 cbl_function    : TOKEN_DISPLAY
                 | TOKEN_MOVE
                 | TOKEN_KEYWORD_COMPUTE
                 | TOKEN_PERFORM
                 ;
-if_branch       : if_branch parms if_branch
+if_branch       : if_branch param if_branch
                 | TOKEN_IF
                 | TOKEN_ELSE_IF
                 | TOKEN_ELSE

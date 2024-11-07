@@ -55,7 +55,7 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     TOKEN_EOF = 258,               /* TOKEN_EOF  */
-    TOKEN_IDENTIFICATION = 259,    /* TOKEN_IDENTIFICATION  */
+    TOKEN_KEYWORD_IDENTIFICATION = 259, /* TOKEN_KEYWORD_IDENTIFICATION  */
     TOKEN_KEYWORD_DIVISION = 260,  /* TOKEN_KEYWORD_DIVISION  */
     TOKEN_KEYWORD_DATA = 261,      /* TOKEN_KEYWORD_DATA  */
     TOKEN_KEYWORD_SECTION = 262,   /* TOKEN_KEYWORD_SECTION  */
