@@ -14,7 +14,6 @@ extern int yylineno;
 
 UTEST_MAIN();
 
-
 UTEST(parser, math) {
   // Must include the null character to terminate input
   char string[] = "1+8/4-3;\0"; 
@@ -82,4 +81,57 @@ UTEST(parser, branching) {
 
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
-}  
+} 
+
+UTEST(parser, looping) {
+  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10 MOVE I TO A(I)\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0);
+}
+
+UTEST(parser, sorting) {
+  // Read sample file as input
+  yyin = fopen("samples/sorting-snippet.cbl", "r");
+  yyrestart(yyin);
+  ASSERT_TRUE(yyin);
+
+  yylineno = 1;
+  int result = yyparse();
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0); 
+}
+
+UTEST(parser, quadratic) {
+  // Read sample file as input
+  yyin = fopen("samples/quadratic-snippet.cbl", "r");
+  yyrestart(yyin);
+  ASSERT_TRUE(yyin);
+
+  yylineno = 1;
+  int result = yyparse();
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0); 
+} 
+
+UTEST(parser, boolean) {
+  // Must include the null character to terminate input
+  char string[] = "IF A > B THEN Var = TRUE ELSE Var = FALSE\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0);
+}

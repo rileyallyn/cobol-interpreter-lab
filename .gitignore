@@ -1,7 +1,10 @@
 .DS_Store
-*.out
-scanner.c
+lab-4/token.h
 *.o
+*.out
+*.output
 parser.c
 parser.h
-parser.output
+scanner.c
+test_print.txt
+test_evaluate.txt
