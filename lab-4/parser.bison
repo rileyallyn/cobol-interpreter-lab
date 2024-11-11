@@ -10,7 +10,7 @@ int yylex();
 %define parse.error detailed
 
 %token TOKEN_EOF
-%token TOKEN_IDENTIFICATION
+%token TOKEN_KEYWORD_IDENTIFICATION
 %token TOKEN_KEYWORD_DIVISION
 %token TOKEN_KEYWORD_DATA
 %token TOKEN_KEYWORD_SECTION
@@ -28,6 +28,8 @@ int yylex();
 %token TOKEN_UNTIL
 %token TOKEN_END_PERFORM
 %token TOKEN_IF
+%token TOKEN_ELSE_IF
+%token TOKEN_ELSE
 %token TOKEN_END_IF
 %token TOKEN_SPACE
 %token TOKEN_KEYWORD_OCCURS
@@ -60,6 +62,7 @@ int yylex();
 %token TOKEN_EXPONENTIAL
 %token TOKEN_DISPLAY
 
+
 %%
 file            : statements     
 statements      : statements statement
@@ -68,22 +71,98 @@ statements      : statements statement
 statement       : section
                 | sect_data
                 | simple_stmt
+                | data_space
+                | data_declaration
                 ;
+                
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                 | type TOKEN_RUN TOKEN_DOT
                 ;
-sect_data       : TOKEN_PROGRAM_ID  TOKEN_DOT TOKEN_IDENT TOKEN_DOT
+sect_data       : TOKEN_PROGRAM_ID TOKEN_DOT TOKEN_IDENT TOKEN_DOT
                 ;
-type            : TOKEN_IDENTIFICATION
+type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_PROCEDURE
                 | TOKEN_STOP
                 | TOKEN_KEYWORD_DATA
                 ;
-simple_stmt     : function
+simple_stmt     : cbl_function
+                | cbl_function op_parms 
+                | cbl_function assignment_stmt
+                | cbl_function op_parms assignment_stmt
+                | if_branch 
+                | perform_stmt
                 ;
-function        : TOKEN_DISPLAY parms
                 ;
-parms           : TOKEN_STRING
+assignment_stmt : TOKEN_EQUAL ext_function
+                | TOKEN_EQUAL function
+                | TOKEN_KEYWORD_TO op_parms
+                ;
+op_parms        : op_parms TOKEN_ADD op_parms
+                | op_parms TOKEN_SUB op_parms
+                | op_parms TOKEN_MULTIPLY op_parms
+                | op_parms TOKEN_DIVIDE op_parms
+                | op_parms TOKEN_EXPONENTIAL op_parms
+                | op_parms TOKEN_LESS_THAN op_parms
+                | op_parms TOKEN_GREATER_THAN op_parms
+                | op_parms TOKEN_EQUAL op_parms
+                | TOKEN_SUB op_parms
+                | TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
+                | TOKEN_IDENT
+                | TOKEN_INTEGER
+                | TOKEN_STRING
+                | TOKEN_SPACE
+                | op_parms op_parms
+                ;
+function        : op_parms
+                ;
+ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+                ;
+cbl_function    : TOKEN_DISPLAY
+                | TOKEN_MOVE
+                | TOKEN_KEYWORD_COMPUTE
+                | TOKEN_PERFORM
+                ;
+if_branch       : TOKEN_IF op_parms
+                | TOKEN_ELSE_IF op_parms
+                | TOKEN_ELSE statement
+                | TOKEN_END_IF
+                ;
+perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
+                | TOKEN_END_PERFORM
+                ;
+data_space      : TOKEN_WORKING_STORAGE 
+                | TOKEN_KEYWORD_SECTION 
+                | TOKEN_DOT
+                ;
+data_category   : TOKEN_ALPHANUMERIC 
+                | TOKEN_NUMERIC 
+                | TOKEN_SIGNED_NUMERIC
+                | TOKEN_IMPLIED_DECIMAL
+                ;
+categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
+                | TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+                ;
+complete_category: complete_category complete_category  
+                | data_category categry_contain
+                ;
+data_clause     : TOKEN_COMPUTATION_LEVEL_0 
+                | TOKEN_COMPUTATION_LEVEL_1 
+                | TOKEN_COMPUTATION_LEVEL_2 
+                | TOKEN_COMPUTATION_LEVEL_3
+                | TOKEN_KEYWORD_VALUE
+                | TOKEN_KEYWORD_OCCURS
+                ;
+full_data_clause: data_clause data_clause
+                | data_clause
+                ;
+simple_decl     : TOKEN_INTEGER TOKEN_IDENT TOKEN_DOT
+                ;
+full_decl       : TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_DOT
+                | TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE complete_category full_data_clause TOKEN_INTEGER TOKEN_DOT
+                ;
+data_declaration: simple_decl
+                | full_decl
                 ;
 
 
