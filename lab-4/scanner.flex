@@ -6,7 +6,7 @@ DIGIT [0-9]+
 %%
 
 (" "|\t|\n) /* skip whitespace */
-\*>\ ?.* { return TOKEN_COMMENT; }
+\*>\ ?.*
 IDENTIFICATION { return TOKEN_KEYWORD_IDENTIFICATION; }
 DIVISION { return TOKEN_KEYWORD_DIVISION; }
 PROGRAM-ID { return TOKEN_PROGRAM_ID; }

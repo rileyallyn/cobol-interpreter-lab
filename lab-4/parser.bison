@@ -86,21 +86,16 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : cbl_function
-                | cbl_function param 
+                | cbl_function op_parms 
                 | cbl_function assignment_stmt
-                | cbl_function param assignment_stmt
-                | cbl_function TOKEN_IDENT assignment_stmt
+                | cbl_function op_parms assignment_stmt
                 | if_branch 
+                | perform_stmt
                 ;
-expression      : op_parms
-                | bool
-                ;
-bool            : op_parms TOKEN_EQUAL op_parms
                 ;
 assignment_stmt : TOKEN_EQUAL ext_function
                 | TOKEN_EQUAL function
-                | TOKEN_KEYWORD_TO TOKEN_IDENT
-                | TOKEN_KEYWORD_TO TOKEN_IDENT categry_contain
+                | TOKEN_KEYWORD_TO op_parms
                 ;
 op_parms        : op_parms TOKEN_ADD op_parms
                 | op_parms TOKEN_SUB op_parms
@@ -109,14 +104,14 @@ op_parms        : op_parms TOKEN_ADD op_parms
                 | op_parms TOKEN_EXPONENTIAL op_parms
                 | op_parms TOKEN_LESS_THAN op_parms
                 | op_parms TOKEN_GREATER_THAN op_parms
+                | op_parms TOKEN_EQUAL op_parms
                 | TOKEN_SUB op_parms
                 | TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
                 | TOKEN_IDENT
                 | TOKEN_INTEGER
-                ;
-param           : TOKEN_IDENT
                 | TOKEN_STRING
-                | param param
+                | TOKEN_SPACE
+                | op_parms op_parms
                 ;
 function        : op_parms
                 ;
@@ -127,10 +122,13 @@ cbl_function    : TOKEN_DISPLAY
                 | TOKEN_KEYWORD_COMPUTE
                 | TOKEN_PERFORM
                 ;
-if_branch       : TOKEN_IF expression
-                | TOKEN_ELSE_IF expression
+if_branch       : TOKEN_IF op_parms
+                | TOKEN_ELSE_IF op_parms
                 | TOKEN_ELSE statement
                 | TOKEN_END_IF
+                ;
+perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
+                | TOKEN_END_PERFORM
                 ;
 data_space      : TOKEN_WORKING_STORAGE 
                 | TOKEN_KEYWORD_SECTION 
@@ -142,6 +140,7 @@ data_category   : TOKEN_ALPHANUMERIC
                 | TOKEN_IMPLIED_DECIMAL
                 ;
 categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
+                | TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
 complete_category: complete_category complete_category  
                 | data_category categry_contain

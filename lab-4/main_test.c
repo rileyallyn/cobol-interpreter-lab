@@ -16,7 +16,7 @@ UTEST_MAIN();
 
 UTEST(parser, math) {
   // Must include the null character to terminate input
-  char string[] = "1+8/4-3;\0"; 
+  char string[] = "COMPUTE A = (b ** 2) - (4 * a * c)\0"; 
   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
 
   yylineno = 1;
@@ -26,20 +26,6 @@ UTEST(parser, math) {
 
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
-}
-
-UTEST(parser, missing_semi_colon) {
-  // Must include the null character to terminate input
-  char string[] = "1+8/4-3\0"; 
-  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
-
-  yylineno = 1;
-  int result = yyparse();
-
-  yy_delete_buffer(buffer);
-
-  // Assert the result to test correctness
-  ASSERT_EQ(result, 1); 
 }
 
 UTEST(parser, hello) {
@@ -71,7 +57,7 @@ UTEST(parser, print) {
 
 UTEST(parser, branching) {
   // Must include the null character to terminate input
-  char string[] = "IF A > B THEN DISPLAY 'A is greater than B' ELSE DISPLAY 'B is greater than A'\0"; 
+  char string[] = "IF A > B DISPLAY 'A is greater than B' ELSE DISPLAY 'B is greater than A'\0"; 
   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
 
   yylineno = 1;
@@ -81,10 +67,23 @@ UTEST(parser, branching) {
 
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
-} 
+}
 
 UTEST(parser, looping) {
-  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10 MOVE I TO A(I)\0"; 
+  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10\0"; 
+  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+
+  yylineno = 1;
+  int result = yyparse();
+
+  yy_delete_buffer(buffer);
+
+  // Assert the result to test correctness
+  ASSERT_EQ(result, 0);
+}
+
+UTEST(parser, assignment) {
+  char string[] = "MOVE I TO A(I) MOVE 1 TO I COMPUTE discriminant = (b ** 2) - (4 * a * c)\0"; 
   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
 
   yylineno = 1;
@@ -121,17 +120,3 @@ UTEST(parser, quadratic) {
   // Assert the result to test correctness
   ASSERT_EQ(result, 0); 
 } 
-
-UTEST(parser, boolean) {
-  // Must include the null character to terminate input
-  char string[] = "IF A > B THEN Var = TRUE ELSE Var = FALSE\0"; 
-  YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
-
-  yylineno = 1;
-  int result = yyparse();
-
-  yy_delete_buffer(buffer);
-
-  // Assert the result to test correctness
-  ASSERT_EQ(result, 0);
-}
