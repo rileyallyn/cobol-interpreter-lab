@@ -1,5 +1,5 @@
 %{
-#include "token.h"
+#include "parser.h"
 %}
 NAME [a-zA-Z]([a-zA-Z0-9_-]*[a-zA-Z0-9])?
 DIGIT [0-9]+
