@@ -20,7 +20,7 @@ scanner.c: scanner.flex parser.h
 	flex -oscanner.c scanner.flex
 
 parser.c parser.h: parser.bison
-	bison --defines=parser.h --output=parser.c -v parser.bison
+	bison --defines=parser.h --output=parser.c -v parser.bison -Wconflicts-sr -Wcounterexamples
 
 # clean causes all intermediate files to be deleted.
 
