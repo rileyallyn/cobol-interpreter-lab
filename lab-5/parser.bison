@@ -102,7 +102,6 @@ statement       : section
                 | data_space
                 | data_declaration
                 ;
-                
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                 | type TOKEN_RUN TOKEN_DOT
                 ;
