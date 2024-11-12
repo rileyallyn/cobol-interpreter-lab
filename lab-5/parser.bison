@@ -131,11 +131,12 @@ op_parms        : mathmaticalexpr
                 | otherexpr
                 | type_expr
                 ;
-mathmaticalexpr : op_parms TOKEN_ADD op_parms
-                | op_parms TOKEN_SUB op_parms
-                | op_parms TOKEN_MULTIPLY op_parms
-                | op_parms TOKEN_DIVIDE op_parms
-                | op_parms TOKEN_EXPONENTIAL op_parms
+mathmaticalexpr : type_expr TOKEN_ADD type_expr
+                | type_expr TOKEN_SUB type_expr
+                | type_expr TOKEN_MULTIPLY type_expr
+                | type_expr TOKEN_DIVIDE type_expr
+                | type_expr TOKEN_EXPONENTIAL type_expr
+                | TOKEN_SUB type_expr
                 ;
 booleanexpr     : op_parms TOKEN_LESS_THAN op_parms
                 | op_parms TOKEN_GREATER_THAN op_parms

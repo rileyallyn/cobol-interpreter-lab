@@ -99,20 +99,26 @@ assignment_stmt : TOKEN_EQUAL ext_function
                 | TOKEN_EQUAL function
                 | TOKEN_KEYWORD_TO op_parms
                 ;
-op_parms        : op_parms TOKEN_ADD op_parms
-                | op_parms TOKEN_SUB op_parms
-                | op_parms TOKEN_MULTIPLY op_parms
-                | op_parms TOKEN_DIVIDE op_parms
-                | op_parms TOKEN_EXPONENTIAL op_parms
-                | op_parms TOKEN_LESS_THAN op_parms
+op_parms        : mathmaticalexpr
+                | booleanexpr
+                | otherexpr
+                | type_expr
+                ;
+mathmaticalexpr : type_expr TOKEN_ADD type_expr
+                | type_expr TOKEN_SUB type_expr
+                | type_expr TOKEN_MULTIPLY type_expr
+                | type_expr TOKEN_DIVIDE type_expr
+                | type_expr TOKEN_EXPONENTIAL type_expr
+                | TOKEN_SUB type_expr
+                ;
+booleanexpr     : op_parms TOKEN_LESS_THAN op_parms
                 | op_parms TOKEN_GREATER_THAN op_parms
                 | op_parms TOKEN_EQUAL op_parms
-                | TOKEN_SUB op_parms
-                | TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
-                | expr
+                ;
+otherexpr       : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
                 | op_parms op_parms
                 ;
-expr            : TOKEN_IDENT
+type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                 | TOKEN_STRING
                 | TOKEN_SPACE
