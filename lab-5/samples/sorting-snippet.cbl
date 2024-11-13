@@ -39,7 +39,6 @@ PROCEDURE DIVISION.
                 MOVE WS-SORT-ROW(WS-J) TO WS-TEMP-ROW
                 MOVE WS-SORT-ROW(WS-J + 1) TO WS-SORT-ROW(WS-J)
                 MOVE WS-TEMP-ROW TO WS-SORT-ROW(WS-J + 1)
-            END-IF
         END-PERFORM
     END-PERFORM
 

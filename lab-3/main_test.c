@@ -20,7 +20,7 @@ struct token_st {
 
 UTEST(scanner, hello) {
   struct token_st tokens[] = {
-    {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
+    {TOKEN_KEYWORD_IDENTIFICATION, "IDENTIFICATION"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
     {TOKEN_PROGRAM_ID, "PROGRAM-ID"},
@@ -56,7 +56,7 @@ UTEST(scanner, quadratic) {
     {TOKEN_COMMENT, "*> Code altered from https://www.quora.com/What-is-a-COBOL-program-that-will-solve-a-quadratic-equation"},
     {TOKEN_COMMENT, "*> Program finds the roots to a simple quadratic equation"},
 
-    {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
+    {TOKEN_KEYWORD_IDENTIFICATION, "IDENTIFICATION"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
     {TOKEN_PROGRAM_ID, "PROGRAM-ID"},
@@ -316,7 +316,7 @@ UTEST(scanner, quadratic) {
 
 UTEST(scanner, sorting) {
   struct token_st tokens[] = {
-    {TOKEN_IDENTIFICATION, "IDENTIFICATION"},
+    {TOKEN_KEYWORD_IDENTIFICATION, "IDENTIFICATION"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
     {TOKEN_PROGRAM_ID, "PROGRAM-ID"},

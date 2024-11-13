@@ -93,49 +93,53 @@ simple_stmt     : cbl_func_stmt
 cbl_func_stmt   : cbl_function
                 | cbl_function op_parms 
                 | cbl_function assignment_stmt
-                | cbl_function op_parms assignment_stmt
+                | cbl_function op_parm assignment_stmt
                 ;
 assignment_stmt : TOKEN_EQUAL ext_function
-                | TOKEN_EQUAL function
+                | TOKEN_EQUAL op_parms
                 | TOKEN_KEYWORD_TO op_parms
                 ;
-op_parms        : mathmaticalexpr
+op_parms        : op_parm
+                | op_parms op_parm
+                ;
+op_parm         : mathmaticalexpr
                 | booleanexpr
-                | otherexpr
                 | type_expr
                 ;
-mathmaticalexpr : type_expr TOKEN_ADD type_expr
-                | type_expr TOKEN_SUB type_expr
-                | type_expr TOKEN_MULTIPLY type_expr
-                | type_expr TOKEN_DIVIDE type_expr
-                | type_expr TOKEN_EXPONENTIAL type_expr
-                | TOKEN_SUB type_expr
+mathmaticalexpr : type_expr
+                | mathmaticalexpr TOKEN_ADD mathmaticalexpr
+                | mathmaticalexpr TOKEN_SUB mathmaticalexpr
+                | mathmaticalexpr TOKEN_MULTIPLY mathmaticalexpr
+                | mathmaticalexpr TOKEN_DIVIDE mathmaticalexpr
+                | mathmaticalexpr TOKEN_EXPONENTIAL mathmaticalexpr
+                | container_expr
+                | type_expr container_expr
                 ;
-booleanexpr     : op_parms TOKEN_LESS_THAN op_parms
-                | op_parms TOKEN_GREATER_THAN op_parms
-                | op_parms TOKEN_EQUAL op_parms
+container_expr  : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
                 ;
-otherexpr       : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
-                | op_parms op_parms
+booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN mathmaticalexpr
+                | mathmaticalexpr TOKEN_GREATER_THAN mathmaticalexpr
+                | mathmaticalexpr TOKEN_EQUAL mathmaticalexpr
                 ;
 type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                 | TOKEN_STRING
                 | TOKEN_SPACE
-                ;
-function        : op_parms
+                | TOKEN_SUB TOKEN_IDENT
                 ;
 ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
 cbl_function    : TOKEN_DISPLAY
                 | TOKEN_MOVE
                 | TOKEN_KEYWORD_COMPUTE
-                | TOKEN_PERFORM
                 ;
-if_branch       : TOKEN_IF op_parms
-                | TOKEN_ELSE_IF op_parms
-                | TOKEN_ELSE statement
-                | TOKEN_END_IF
+if_branch       : if_start statements else_parts
+                ;
+if_start        : TOKEN_IF booleanexpr
+                ;
+else_parts      : 
+                | TOKEN_ELSE_IF booleanexpr statements else_parts
+                | TOKEN_ELSE statements
                 ;
 perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
                 | TOKEN_END_PERFORM
