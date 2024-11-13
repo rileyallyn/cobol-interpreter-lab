@@ -24,12 +24,10 @@
                DISPLAY "The equation has two distinct real roots: "
                DISPLAY "Root 1: " root1
                DISPLAY "Root 2: " root2
-
            ELSE IF discriminant = 0
                COMPUTE root1 = -b / (2 * a)
                DISPLAY "The equation has one real root: "
                DISPLAY "Root: " root1
            ELSE
                DISPLAY "The equation has no real roots."
-
        STOP RUN.
