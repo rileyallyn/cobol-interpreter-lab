@@ -9,57 +9,58 @@ int yylex();
 %debug
 %define parse.error detailed
 
-%token TOKEN_EOF
-%token TOKEN_KEYWORD_IDENTIFICATION
-%token TOKEN_KEYWORD_DIVISION
-%token TOKEN_KEYWORD_DATA
-%token TOKEN_KEYWORD_SECTION
-%token TOKEN_PROGRAM_ID
-%token TOKEN_WORKING_STORAGE
-%token TOKEN_PROCEDURE
-%token TOKEN_STOP
-%token TOKEN_RUN
-%token TOKEN_MOVE
-%token TOKEN_KEYWORD_TO
-%token TOKEN_PERFORM
-%token TOKEN_VARYING
-%token TOKEN_KEYWORD_FROM
-%token TOKEN_KEYWORD_BY
-%token TOKEN_UNTIL
-%token TOKEN_END_PERFORM
-%token TOKEN_IF
-%token TOKEN_ELSE_IF
-%token TOKEN_ELSE
-%token TOKEN_END_IF
-%token TOKEN_SPACE
-%token TOKEN_KEYWORD_OCCURS
-%token TOKEN_KEYWORD_VALUE
-%token TOKEN_KEYWORD_COMPUTE
-%token TOKEN_KEYWORD_FUNCTION
-%token TOKEN_IDENT
-%token TOKEN_STRING
-%token TOKEN_INTEGER
-%token TOKEN_PICTURE
+%token TOKEN_ADD
 %token TOKEN_ALPHANUMERIC
-%token TOKEN_NUMERIC
-%token TOKEN_SIGNED_NUMERIC
-%token TOKEN_IMPLIED_DECIMAL
 %token TOKEN_COMPUTATION_LEVEL_0
 %token TOKEN_COMPUTATION_LEVEL_1
 %token TOKEN_COMPUTATION_LEVEL_2
 %token TOKEN_COMPUTATION_LEVEL_3
-%token TOKEN_LEFT_PARENTHESIS
-%token TOKEN_RIGHT_PARENTHESIS
-%token TOKEN_DOT
-%token TOKEN_ADD
-%token TOKEN_SUB
-%token TOKEN_MULTIPLY
-%token TOKEN_DIVIDE
-%token TOKEN_EQUAL
-%token TOKEN_GREATER_THAN
-%token TOKEN_LESS_THAN
-%token TOKEN_EXPONENTIAL
 %token TOKEN_DISPLAY
+%token TOKEN_DIVIDE
+%token TOKEN_DOT
+%token TOKEN_ELSE
+%token TOKEN_ELSE_IF
+%token TOKEN_END_IF
+%token TOKEN_END_PERFORM
+%token TOKEN_EQUAL
+%token TOKEN_EXPONENTIAL
+%token TOKEN_GREATER_THAN
+%token TOKEN_IDENT
+%token TOKEN_IF
+%token TOKEN_IMPLIED_DECIMAL
+%token TOKEN_INTEGER
+%token TOKEN_KEYWORD_BY
+%token TOKEN_KEYWORD_COMPUTE
+%token TOKEN_KEYWORD_DATA
+%token TOKEN_KEYWORD_DIVISION
+%token TOKEN_KEYWORD_FROM
+%token TOKEN_KEYWORD_FUNCTION
+%token TOKEN_KEYWORD_IDENTIFICATION
+%token TOKEN_KEYWORD_OCCURS
+%token TOKEN_KEYWORD_SECTION
+%token TOKEN_KEYWORD_TO
+%token TOKEN_KEYWORD_VALUE
+%token TOKEN_LEFT_PARENTHESIS
+%token TOKEN_LESS_THAN
+%token TOKEN_MOVE
+%token TOKEN_MULTIPLY
+%token TOKEN_NUMERIC
+%token TOKEN_PERFORM
+%token TOKEN_PICTURE
+%token TOKEN_PROGRAM_ID
+%token TOKEN_PROCEDURE
+%token TOKEN_RIGHT_PARENTHESIS
+%token TOKEN_RUN
+%token TOKEN_SIGNED_NUMERIC
+%token TOKEN_SPACE
+%token TOKEN_STOP
+%token TOKEN_STRING
+%token TOKEN_SUB
+%token TOKEN_UNTIL
+%token TOKEN_VARYING
+%token TOKEN_WORKING_STORAGE
+%token TOKEN_EOF
+
 
 
 %%
@@ -88,6 +89,7 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
                 ;
 simple_stmt     : cbl_func_stmt
                 | if_branch 
+                | else_parts
                 | perform_stmt
                 ;
 cbl_func_stmt   : cbl_function
@@ -106,20 +108,22 @@ op_parm         : mathmaticalexpr
                 | booleanexpr
                 | type_expr
                 ;
+term            : mathmaticalexpr
+                ;
 mathmaticalexpr : type_expr
-                | mathmaticalexpr TOKEN_ADD mathmaticalexpr
-                | mathmaticalexpr TOKEN_SUB mathmaticalexpr
-                | mathmaticalexpr TOKEN_MULTIPLY mathmaticalexpr
-                | mathmaticalexpr TOKEN_DIVIDE mathmaticalexpr
-                | mathmaticalexpr TOKEN_EXPONENTIAL mathmaticalexpr
+                | mathmaticalexpr TOKEN_ADD term
+                | mathmaticalexpr TOKEN_SUB term
+                | mathmaticalexpr TOKEN_MULTIPLY term
+                | mathmaticalexpr TOKEN_DIVIDE term
+                | mathmaticalexpr TOKEN_EXPONENTIAL term
                 | container_expr
                 | type_expr container_expr
                 ;
 container_expr  : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
                 ;
-booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN mathmaticalexpr
-                | mathmaticalexpr TOKEN_GREATER_THAN mathmaticalexpr
-                | mathmaticalexpr TOKEN_EQUAL mathmaticalexpr
+booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
+                | mathmaticalexpr TOKEN_GREATER_THAN term
+                | mathmaticalexpr TOKEN_EQUAL term
                 ;
 type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
@@ -133,20 +137,16 @@ cbl_function    : TOKEN_DISPLAY
                 | TOKEN_MOVE
                 | TOKEN_KEYWORD_COMPUTE
                 ;
-if_branch       : if_start statements else_parts
+if_branch       : TOKEN_IF booleanexpr 
                 ;
-if_start        : TOKEN_IF booleanexpr
-                ;
-else_parts      : 
-                | TOKEN_ELSE_IF booleanexpr statements else_parts
+else_parts      : TOKEN_ELSE_IF booleanexpr statements
                 | TOKEN_ELSE statements
+                | TOKEN_END_IF
                 ;
 perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
                 | TOKEN_END_PERFORM
                 ;
-data_space      : TOKEN_WORKING_STORAGE 
-                | TOKEN_KEYWORD_SECTION 
-                | TOKEN_DOT
+data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
                 ;
 data_category   : TOKEN_ALPHANUMERIC 
                 | TOKEN_NUMERIC 
