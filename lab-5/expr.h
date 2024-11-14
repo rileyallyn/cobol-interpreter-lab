@@ -106,6 +106,7 @@ void expr_print(struct expr *e);
 
 void stmt_evaluate(struct stmt *e);
 void decl_evaluate(struct decl *e);
+void stmt_evaluate_print(struct expr *e);
 void decl_subscript_evaluate(struct expr *e, float value);
 float expr_evaluate(struct expr *e);
 struct expr *expr_sub_evaluate(struct expr *e);

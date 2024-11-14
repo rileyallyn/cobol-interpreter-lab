@@ -2,7 +2,7 @@
 # The top level rule indicates how to link everything together into main
 
 main: main.o symbol_map.o expr.o scanner.o parser.o
-	gcc -g3 main.o symbol_map.o expr.o scanner.o parser.o -o interpreter.out -lm
+	gcc main.o symbol_map.o expr.o scanner.o parser.o -o interpreter.out -lm
 
 test: main_test.o symbol_map.o expr.o scanner.o parser.o
 	gcc main_test.o symbol_map.o expr.o scanner.o parser.o -o interpreter_test.out -lm

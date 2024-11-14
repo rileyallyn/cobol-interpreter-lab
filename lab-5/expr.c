@@ -264,16 +264,7 @@ void stmt_evaluate(struct stmt *s) {
     }
     break;
   case STMT_PRINT:
-    if (s->expr->kind == EXPR_STRING_LITERAL) {
-      printf("%s", expr_string_evaluate(s->expr));
-    } else if (s->expr->kind == EXPR_FLOAT_LITERAL) {
-      printf("%f", expr_evaluate(s->expr));
-    } else if (s->expr->kind == EXPR_INTEGER_LITERAL ||
-               s->expr->kind == EXPR_NAME || s->expr->kind == EXPR_SUBSCRIPT) {
-      printf("%.0f", expr_evaluate(s->expr));
-    } else {
-      printf("runtime error: print expression is not literal\n");
-    }
+    stmt_evaluate_print(s->expr);
     break;
   case STMT_BLOCK:
     stmt_evaluate(s->body);
@@ -283,6 +274,25 @@ void stmt_evaluate(struct stmt *s) {
   }
 
   stmt_evaluate(s->next);
+}
+
+void stmt_evaluate_print(struct expr *e) {
+  if (!e)
+    return;
+
+
+  if (e->kind == EXPR_STRING_LITERAL) {
+      printf("%s", expr_string_evaluate(e));
+    } else if (e->kind == EXPR_FLOAT_LITERAL) {
+      printf("%f", expr_evaluate(e));
+  } else if (e->kind == EXPR_INTEGER_LITERAL ||
+               e->kind == EXPR_NAME || e->kind == EXPR_SUBSCRIPT) {
+    printf("%.0f", expr_evaluate(e));
+  } else {
+      printf("runtime error: print expression is not literal\n");
+  }
+
+  stmt_evaluate_print(e->right);
 }
 
 void decl_evaluate(struct decl *d) {
