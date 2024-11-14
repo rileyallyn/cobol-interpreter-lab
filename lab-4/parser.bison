@@ -114,18 +114,20 @@ op_parm         : mathmaticalexpr
                 | booleanexpr
                 | type_expr
                 ;
-term            : mathmaticalexpr
+term            : mathmaticalexpr 
+                ;
+math_op         : TOKEN_ADD
+                | TOKEN_SUB
+                | TOKEN_MULTIPLY
+                | TOKEN_DIVIDE
+                | TOKEN_EXPONENTIAL
                 ;
 mathmaticalexpr : type_expr
+                | mathmaticalexpr math_op term
                 | container_expr
                 | type_expr container_expr
-                | mathmaticalexpr TOKEN_ADD term
-                | mathmaticalexpr TOKEN_SUB term
-                | mathmaticalexpr TOKEN_MULTIPLY term
-                | mathmaticalexpr TOKEN_DIVIDE term
-                | mathmaticalexpr TOKEN_EXPONENTIAL term
-                ;                
-container_expr  : TOKEN_LEFT_PARENTHESIS op_parms_list TOKEN_RIGHT_PARENTHESIS
+                ;
+container_expr  : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                 | mathmaticalexpr TOKEN_GREATER_THAN term
