@@ -85,7 +85,9 @@ struct expr *expr_create_float_literal(float value) {
 
 struct expr *expr_create_string_literal(const char *value) {
   struct expr *e = expr_create(EXPR_STRING_LITERAL, 0, 0);
-  e->string_literal = value;
+  char *dest = malloc(sizeof(*value));
+  strcpy(dest, value); // copy contents of source to dest
+  e->string_literal = dest;
   return e;
 }
 
@@ -122,6 +124,7 @@ between the left and right nodes.
 void stmt_print(struct stmt *s) {
   if (!s)
     return;
+  
 
   switch (s->kind) {
   case STMT_DECL:
@@ -145,6 +148,10 @@ void stmt_print(struct stmt *s) {
     break;
   case STMT_BLOCK:
     stmt_print(s->body);
+    break;
+  // we haven't implemented sections yet
+  case STMT_SECTION:
+    printf("section\n");
     break;
   }
 
@@ -270,6 +277,8 @@ void stmt_evaluate(struct stmt *s) {
     break;
   case STMT_BLOCK:
     stmt_evaluate(s->body);
+    break;
+  case STMT_SECTION:
     break;
   }
 

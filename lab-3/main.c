@@ -8,7 +8,7 @@ extern char *yytext;
 
 int main(int argc, char *argv[]) {
   FILE *file;
-  const char *filename = "samples/quadratic_snippet.cbl"; // Default filename
+  const char *filename = "samples/quadratic-snippet.cbl";
 
   // Check if a filename is provided as a command-line argument
   if (argc > 1) {
@@ -25,6 +25,6 @@ int main(int argc, char *argv[]) {
     token_t t = yylex();
     if (t == TOKEN_EOF)
       break;
-    printf("token: %d text: %s\n", t, yytext);
+    printf("token: %d, text: %s\n", t, yytext);
   }
 }

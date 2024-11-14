@@ -19,20 +19,45 @@ extern int yylineno;
 
 UTEST_MAIN();
 
-void read_file(const char *filename, char *expected_output) {
-  // Read the expected output from a file
-  FILE *expected_file = fopen(filename, "r");
-  if (expected_file == NULL) {
-    perror("fopen");
-    exit(EXIT_FAILURE);
-  }
-  size_t n =
-      fread(expected_output, 1, sizeof(expected_output) - 1, expected_file);
-  expected_output[n] = '\0';
-  fclose(expected_file);
+char* read_file_dynamic(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("fopen");
+        return NULL;
+    }
+
+    // Seek to the end of the file to determine its size
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // Allocate a buffer to hold the file contents
+    char* buffer = (char*)malloc(file_size + 1);
+    if (buffer == NULL) {
+        perror("malloc");
+        fclose(file);
+        return NULL;
+    }
+
+    // Read the entire file into the buffer
+    size_t read_size = fread(buffer, 1, file_size, file);
+    if (read_size != file_size) {
+        perror("fread");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    // Null-terminate the buffer
+    buffer[file_size] = '\0';
+
+    fclose(file);
+    return buffer;
 }
 
 void redirect_stdout(const char *filename, int evalutate) {
+  fflush(stdout);
+
   // Redirect stdout to a temporary file
   FILE *temp_file = fopen(filename, "w");
   if (temp_file == NULL) {
@@ -56,42 +81,18 @@ void redirect_stdout(const char *filename, int evalutate) {
   close(stdout_fd);
 }
 
-UTEST(interpreter, print) {
+struct InterpreterTestFile {
+  const char *evaluated_file;
+  const char *print_file;
+  const char *test_file;
+};
 
-  yyin = fopen("samples/multiple_statements.c", "r");
-  yyrestart(yyin);
-  ASSERT_TRUE(yyin);
-
-//   yylineno = 1;
-  yylineno = 1;
-  int result = yyparse();
-
-  if (result == 0) {
-    // Catch the standard output and compare with expected test result
-    redirect_stdout("test_print.txt", 0);
-    redirect_stdout("test_evaluate.txt", 1);
-  }
-
-  // Assert the result to test correctness
-  ASSERT_EQ(result, 0);
-
-  char actual_print[1024];
-  read_file("test_print.txt", actual_print);
-  char expected_print[1024];
-  read_file("samples/multiple_statements_print.txt", expected_print);
-  ASSERT_STREQ(actual_print, expected_print);
-
-  char actual_evaluate[1024];
-  read_file("test_evaluate.txt", actual_evaluate);
-  char expected_evaluate[1024];
-  read_file("samples/multiple_statements_evaluate.txt", expected_evaluate);
-  ASSERT_STREQ(actual_evaluate, expected_evaluate);
+UTEST_F_SETUP(InterpreterTestFile) {
 }
 
-
-
-UTEST(interpreter, program) {
-  yyin = fopen("samples/program.c", "r");
+UTEST_F_TEARDOWN(InterpreterTestFile) {
+  // and also assert and expect in teardown!
+  yyin = fopen(utest_fixture->test_file, "r");
   yyrestart(yyin);
   ASSERT_TRUE(yyin);
 
@@ -107,55 +108,23 @@ UTEST(interpreter, program) {
   // Assert the result to test correctness
   ASSERT_EQ(result, 0);
 
-  char actual_print[1024];
-  read_file("test_print.txt", actual_print);
-  char expected_print[1024];
-  read_file("samples/program_print.txt", expected_print);
+  char *actual_print = read_file_dynamic("test_print.txt");
+  char *expected_print = read_file_dynamic(utest_fixture->print_file);
   ASSERT_STREQ(actual_print, expected_print);
 
-  char actual_evaluate[1024];
-  read_file("test_evaluate.txt", actual_evaluate);
-  char expected_evaluate[1024];
-  read_file("samples/program_evaluate.txt", expected_evaluate);
+  char *actual_evaluate = read_file_dynamic("test_evaluate.txt");
+  char *expected_evaluate = read_file_dynamic(utest_fixture->evaluated_file);
   ASSERT_STREQ(actual_evaluate, expected_evaluate);
 }
 
-// UTEST(parser, missing_new_line) {
-//   // Must include the null character to terminate input
-//   char string[] = "1+8/4-3\0";
-//   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
+UTEST_F(InterpreterTestFile, print) {
+  utest_fixture->test_file = "samples/multiple_statements.c";
+  utest_fixture->print_file = "samples/multiple_statements_print.txt";
+  utest_fixture->evaluated_file = "samples/multiple_statements_evaluate.txt";
+}
 
-//   yylineno = 1;
-//   int result = yyparse();
-
-//   yy_delete_buffer(buffer);
-
-//   // Assert the result to test correctness
-//   ASSERT_EQ(result, 1);
-// }
-
-// UTEST(parser, hello_world) {
-//   // Read sample file as input
-//   yyin = fopen("samples/hello.py", "r");
-//   yyrestart(yyin);
-//   ASSERT_TRUE(yyin);
-
-//   yylineno = 1;
-//   int result = yyparse();
-
-//   // Assert the result to test correctness
-//   ASSERT_EQ(result, 0);
-// }
-
-// UTEST(parser, quadratic) {
-//   // Read sample file as input
-//   yyin = fopen("samples/quadratic.py", "r");
-//   yyrestart(yyin);
-//   ASSERT_TRUE(yyin);
-
-//   yylineno = 1;
-//   int result = yyparse();
-
-//   // Assert the result to test correctness
-//   ASSERT_EQ(result, 0);
-// }
+UTEST_F(InterpreterTestFile, program_file) {
+  utest_fixture->test_file = "samples/program.c";
+  utest_fixture->print_file = "samples/program_print.txt";
+  utest_fixture->evaluated_file = "samples/program_evaluate.txt";
+}
