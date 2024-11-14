@@ -123,7 +123,6 @@ void stmt_print(struct stmt *s) {
   if (!s)
     return;
   
-  printf("stmt_print: %d\n", s->kind);
 
   switch (s->kind) {
   case STMT_DECL:
@@ -148,11 +147,8 @@ void stmt_print(struct stmt *s) {
   case STMT_BLOCK:
     stmt_print(s->body);
     break;
+  // we haven't implemented sections yet
   case STMT_SECTION:
-    printf("section\n");
-    printf("body: %p\n", s->body);
-    printf("expr: %p\n", s->expr);
-    printf("next: %p\n", s->next);
     break;
   }
 

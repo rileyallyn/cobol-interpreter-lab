@@ -53,9 +53,6 @@ UTEST(scanner, hello) {
 
 UTEST(scanner, quadratic) {
   struct token_st tokens[] = {
-    {TOKEN_COMMENT, "*> Code altered from https://www.quora.com/What-is-a-COBOL-program-that-will-solve-a-quadratic-equation"},
-    {TOKEN_COMMENT, "*> Program finds the roots to a simple quadratic equation"},
-
     {TOKEN_KEYWORD_IDENTIFICATION, "IDENTIFICATION"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
@@ -180,9 +177,8 @@ UTEST(scanner, quadratic) {
     {TOKEN_PROCEDURE, "PROCEDURE"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
-    {TOKEN_COMMENT, "*> program begins here"},
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'EQUATION: (1x^2) + 5x + 6 = 0'"},
+    {TOKEN_STRING, "\"EQUATION: (1x^2) + 5x + 6 = 0\""},
     {TOKEN_KEYWORD_COMPUTE, "COMPUTE"},
     {TOKEN_IDENT, "discriminant"},
     {TOKEN_EQUAL, "="},
@@ -250,14 +246,14 @@ UTEST(scanner, quadratic) {
     {TOKEN_RIGHT_PARENTHESIS, ")"},
 
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'The equation has two distinct real roots: '"},
+    {TOKEN_STRING, "\"The equation has two distinct real roots: \""},
 
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'Root 1: '"},
+    {TOKEN_STRING, "\"Root 1: \""},
     {TOKEN_IDENT, "root1"},
 
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'Root 2: '"},
+    {TOKEN_STRING, "\"Root 2: \""},
     {TOKEN_IDENT, "root2"},
 
     // {TOKEN_EOF, ""},
@@ -282,17 +278,18 @@ UTEST(scanner, quadratic) {
 
 
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'The equation has one real root: '"},
+    {TOKEN_STRING, "\"The equation has one real root: \""},
 
     {TOKEN_DISPLAY, "DISPLAY"},   
-    {TOKEN_STRING, "'Root: '"},
+    {TOKEN_STRING, "\"Root: \""},
     {TOKEN_IDENT, "root1"},
 
 
     {TOKEN_ELSE, "ELSE"},
 
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'The equation has no real roots.'"},
+    {TOKEN_STRING, "\"The equation has no real roots.\""},
+    {TOKEN_END_IF, "END-IF"},
 
     // {TOKEN_EOF, ""},
 
@@ -403,7 +400,6 @@ UTEST(scanner, sorting) {
     {TOKEN_PROCEDURE, "PROCEDURE"},
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
-    {TOKEN_COMMENT, "*> Initialize test data"},
     {TOKEN_MOVE, "MOVE"},
     {TOKEN_STRING, "\"30\""},
     {TOKEN_KEYWORD_TO, "TO"},
@@ -443,7 +439,6 @@ UTEST(scanner, sorting) {
     {TOKEN_INTEGER, "5"},
     {TOKEN_KEYWORD_TO, "TO"},
     {TOKEN_IDENT, "WS-SORT-MAX"},
-    {TOKEN_COMMENT, "*> * Display original array"},
     {TOKEN_DISPLAY, "DISPLAY"},
     {TOKEN_STRING, "\"Original Array Contents:\""},
     {TOKEN_DISPLAY, "DISPLAY"},
@@ -470,7 +465,6 @@ UTEST(scanner, sorting) {
     {TOKEN_END_PERFORM, "END-PERFORM"},
     {TOKEN_DISPLAY, "DISPLAY"},
     {TOKEN_SPACE, "SPACE"},
-    {TOKEN_COMMENT, "*> * Simplified bubble sort"},
     {TOKEN_PERFORM, "PERFORM"},
     {TOKEN_VARYING, "VARYING"},
     {TOKEN_IDENT, "WS-I"},
@@ -540,7 +534,6 @@ UTEST(scanner, sorting) {
     {TOKEN_END_IF, "END-IF"},
     {TOKEN_END_PERFORM, "END-PERFORM"},
     {TOKEN_END_PERFORM, "END-PERFORM"},
-    {TOKEN_COMMENT, "*> * Display sorted array"},
     {TOKEN_DISPLAY, "DISPLAY"},
     {TOKEN_STRING, "\"Sorted Array Contents:\""},
     {TOKEN_DISPLAY, "DISPLAY"},

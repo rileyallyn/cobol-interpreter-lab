@@ -23,7 +23,6 @@ int main(int argc, char *argv[]) {
   printf(
       "Enter an infix expression using the operators +-*/() ending with ;\n\n");
   
-
   if (yyparse() == 0) {
     printf("Parse successful: ");
     if (parser_result != NULL) {

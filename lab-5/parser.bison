@@ -89,7 +89,7 @@ file            : statement_list
                     {parser_result = $1; return 0;}
                 ;
 statement_list  : statement statement_list
-                    { $$ = $1; $1->next = $2; }
+                    { $$ = $1; $1->next = $2;}
                 | statement
                     { $$ = $1; }
                 ;
@@ -98,7 +98,7 @@ statement       : section
                 | sect_data
                     {$$ = $1;}
                 | simple_stmt
-                    {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
+                    {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL); printf("yytext1: %s\n", yytext);}
                 | data_space
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | data_declaration
@@ -117,14 +117,14 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : cbl_func_stmt
-                    {$$ = $1;}
+                    {$$ = $1; printf("yytext2: %s\n", yytext);}
                 | if_branch
                 | else_parts
                 | perform_stmt
                 ;
 cbl_func_stmt   : cbl_function
                 | cbl_function op_parms
-                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
+                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL); printf("yytext3: %s\n", yytext);}
                 | cbl_function assignment_stmt
                 | cbl_function op_parm assignment_stmt
                 ;
@@ -132,12 +132,12 @@ assignment_stmt : TOKEN_EQUAL op_parms
                 | TOKEN_KEYWORD_TO op_parms
                 ;
 op_parms        : op_parm
-                    {$$ = $1;}
+                    {$$ = $1; printf("yytext4: %s\n", yytext);}
                 | op_parm op_parms
                     {$$ = $1; $1->next_expr = $2;}
                 ;
 op_parm         : mathmaticalexpr
-                    {$$ = $1;}
+                    {$$ = $1; printf("yytext5: %s\n", yytext);}
                 | booleanexpr
                     {$$ = $1;}
                 ;
@@ -151,7 +151,7 @@ math_op         : TOKEN_ADD
                 | TOKEN_EXPONENTIAL
                 ;
 mathmaticalexpr : type_expr
-                    {$$ = $1;}
+                    {$$ = $1; printf("yytext6: %s\n", yytext);}
                 | mathmaticalexpr math_op term
                 | container_expr
                     {$$ = $1;}
@@ -169,7 +169,7 @@ type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                     {$$ = expr_create_integer_literal(atoi(yytext));}
                 | TOKEN_STRING
-                    {$$ = expr_create_string_literal(yytext);}
+                    {$$ = expr_create_string_literal(yytext); printf("yytext7: %s\n", yytext);}
                 | TOKEN_SPACE
                     {$$ = expr_create_integer_literal(0);}
                 | TOKEN_SUB TOKEN_IDENT
