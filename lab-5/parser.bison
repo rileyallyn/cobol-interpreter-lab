@@ -84,7 +84,7 @@ struct stmt *parser_result = 0;
 %token TOKEN_DISPLAY
 
 %%
-file            : statement_list stop_run
+file            : statement_list
                     {parser_result = $1; return 0;}
                 ;
 statement_list  : statement statement_list
@@ -102,6 +102,8 @@ statement       : section
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | data_declaration
                     {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
+                | stop_run
+                    {$$ = $1;}
                 ;
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
