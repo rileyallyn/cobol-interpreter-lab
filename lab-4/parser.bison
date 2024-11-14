@@ -61,6 +61,9 @@ int yylex();
 %token TOKEN_WORKING_STORAGE
 %token TOKEN_EOF
 
+%left TOKEN_ADD TOKEN_SUB
+%left TOKEN_MULTIPLY TOKEN_DIVIDE
+%right TOKEN_EXPONENTIAL
 
 
 %%
@@ -96,18 +99,17 @@ cbl_func_stmt   : display_stmt
                 | move_stmt
                 | compute_stmt
                 ;
-
 display_stmt    : TOKEN_DISPLAY op_parms_list
                 ;
 move_stmt       : TOKEN_MOVE op_parms_list assignment_stmt
                 ;
-compute_stmt    : TOKEN_KEYWORD_COMPUTE single_op_parm assignment_stmt
+compute_stmt    : TOKEN_KEYWORD_COMPUTE op_parms_list assignment_stmt
                 ;
 assignment_stmt : TOKEN_EQUAL ext_function
                 | TOKEN_EQUAL op_parms_list
                 | TOKEN_KEYWORD_TO op_parms_list
                 ;
-op_parms_list   : single_op_parm
+op_parms_list   : op_parm
                 | op_parms_list op_parm
                 ;
 op_parm         : mathmaticalexpr
@@ -116,18 +118,24 @@ op_parm         : mathmaticalexpr
                 ;
 term            : mathmaticalexpr 
                 ;
+
 math_op         : TOKEN_ADD
                 | TOKEN_SUB
                 | TOKEN_MULTIPLY
                 | TOKEN_DIVIDE
                 | TOKEN_EXPONENTIAL
                 ;
-mathmaticalexpr : type_expr
+mathmaticalexpr : primary_expr
                 | mathmaticalexpr math_op term
-                | container_expr
-                | type_expr container_expr
                 ;
-container_expr  : TOKEN_LEFT_PARENTHESIS op_parms_list TOKEN_RIGHT_PARENTHESIS
+full_contain    : simple_contain
+                | TOKEN_IDENT simple_contain
+                ;
+simple_contain  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
+                ;
+primary_expr    : type_expr
+                | full_contain
+                | TOKEN_SUB primary_expr
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                 | mathmaticalexpr TOKEN_GREATER_THAN term
@@ -137,7 +145,6 @@ type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                 | TOKEN_STRING
                 | TOKEN_SPACE
-                | TOKEN_SUB TOKEN_IDENT
                 ;
 ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
@@ -185,8 +192,6 @@ data_clauses    : full_data_clause
                 ;
 data_declaration: simple_decl
                 | complex_decl
-                ;
-single_op_parm  : op_parm
                 ;
 
 %%
