@@ -127,7 +127,7 @@ mathmaticalexpr : type_expr
                 | container_expr
                 | type_expr container_expr
                 ;
-container_expr  : TOKEN_LEFT_PARENTHESIS op_parms TOKEN_RIGHT_PARENTHESIS
+container_expr  : TOKEN_LEFT_PARENTHESIS op_parms_list TOKEN_RIGHT_PARENTHESIS
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                 | mathmaticalexpr TOKEN_GREATER_THAN term
