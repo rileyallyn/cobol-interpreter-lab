@@ -108,14 +108,16 @@ op_parm         : mathmaticalexpr
                 | booleanexpr
                 | type_expr
                 ;
-term            : mathmaticalexpr
+term            : mathmaticalexpr 
+                ;
+math_op         : TOKEN_ADD
+                | TOKEN_SUB
+                | TOKEN_MULTIPLY
+                | TOKEN_DIVIDE
+                | TOKEN_EXPONENTIAL
                 ;
 mathmaticalexpr : type_expr
-                | mathmaticalexpr TOKEN_ADD term
-                | mathmaticalexpr TOKEN_SUB term
-                | mathmaticalexpr TOKEN_MULTIPLY term
-                | mathmaticalexpr TOKEN_DIVIDE term
-                | mathmaticalexpr TOKEN_EXPONENTIAL term
+                | mathmaticalexpr math_op term
                 | container_expr
                 | type_expr container_expr
                 ;
@@ -139,8 +141,8 @@ cbl_function    : TOKEN_DISPLAY
                 ;
 if_branch       : TOKEN_IF booleanexpr 
                 ;
-else_parts      : TOKEN_ELSE_IF booleanexpr statements
-                | TOKEN_ELSE statements
+else_parts      : TOKEN_ELSE_IF booleanexpr simple_stmt
+                | TOKEN_ELSE simple_stmt
                 | TOKEN_END_IF
                 ;
 perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
