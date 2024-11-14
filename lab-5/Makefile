@@ -10,6 +10,15 @@ test: main_test.o symbol_map.o expr.o scanner.o parser.o
 parser_test: parser_test.o symbol_map.o expr.o scanner.o parser.o
 	gcc parser_test.o symbol_map.o expr.o scanner.o parser.o -o parser_test.out -lm
 
+
+run_parser_test: parser_test
+	./parser_test.out
+
+run_interpreter_test: test
+	./interpreter_test.out
+
+run_test: run_parser_test run_interpreter_test
+
 # This pattern indicates that any .o file depends
 # upon the .c file of the same name, and all of the .h files.
 # So, if a .o file is needed, it is built automatically.
