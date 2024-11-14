@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "expr.h"
 
 /*
@@ -82,10 +83,8 @@ struct stmt *parser_result = 0;
 %token TOKEN_EXPONENTIAL
 %token TOKEN_DISPLAY
 
-
-
 %%
-file            : statement_list
+file            : statement_list stop_run
                     {parser_result = $1; return 0;}
                 ;
 statement_list  : statement statement_list
@@ -98,7 +97,7 @@ statement       : section
                 | sect_data
                     {$$ = $1;}
                 | simple_stmt
-                    {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL); printf("yytext1: %s\n", yytext);}
+                    {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
                 | data_space
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | data_declaration
@@ -106,7 +105,8 @@ statement       : section
                 ;
 section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-                | TOKEN_STOP TOKEN_RUN TOKEN_DOT
+                ;
+stop_run        : TOKEN_STOP TOKEN_RUN TOKEN_DOT
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 sect_data       : TOKEN_PROGRAM_ID TOKEN_DOT TOKEN_IDENT TOKEN_DOT
@@ -117,14 +117,14 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
                 | TOKEN_KEYWORD_DATA
                 ;
 simple_stmt     : cbl_func_stmt
-                    {$$ = $1; printf("yytext2: %s\n", yytext);}
+                    {$$ = $1;}
                 | if_branch
                 | else_parts
                 | perform_stmt
                 ;
 cbl_func_stmt   : cbl_function
                 | cbl_function op_parms
-                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL); printf("yytext3: %s\n", yytext);}
+                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
                 | cbl_function assignment_stmt
                 | cbl_function op_parm assignment_stmt
                 ;
@@ -132,12 +132,12 @@ assignment_stmt : TOKEN_EQUAL op_parms
                 | TOKEN_KEYWORD_TO op_parms
                 ;
 op_parms        : op_parm
-                    {$$ = $1; printf("yytext4: %s\n", yytext);}
+                    {$$ = $1;}
                 | op_parm op_parms
                     {$$ = $1; $1->next_expr = $2;}
                 ;
 op_parm         : mathmaticalexpr
-                    {$$ = $1; printf("yytext5: %s\n", yytext);}
+                    {$$ = $1;}
                 | booleanexpr
                     {$$ = $1;}
                 ;
@@ -151,7 +151,7 @@ math_op         : TOKEN_ADD
                 | TOKEN_EXPONENTIAL
                 ;
 mathmaticalexpr : type_expr
-                    {$$ = $1; printf("yytext6: %s\n", yytext);}
+                    {$$ = $1;}
                 | mathmaticalexpr math_op term
                 | container_expr
                     {$$ = $1;}
@@ -169,11 +169,10 @@ type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                     {$$ = expr_create_integer_literal(atoi(yytext));}
                 | TOKEN_STRING
-                    {$$ = expr_create_string_literal(yytext); printf("yytext7: %s\n", yytext);}
+                    {char *str = malloc(strlen(yytext) + 1); strcpy(str, yytext); $$ = expr_create_string_literal(str);}
                 | TOKEN_SPACE
                     {$$ = expr_create_integer_literal(0);}
                 | TOKEN_SUB TOKEN_IDENT
-                    {$$ = expr_create_integer_literal(atoi(yytext) * -1);}
                 | ext_function
                 ;
 ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
