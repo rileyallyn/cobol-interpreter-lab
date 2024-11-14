@@ -20,6 +20,7 @@ typedef enum {
   EXPR_ADD,
   EXPR_ARRAY,
   EXPR_DIVIDE,
+  EXPR_EXPONENTIAL,
   EXPR_EQUAL_EQUAL,
   EXPR_FLOAT_LITERAL,
   EXPR_GREATER_THAN,
@@ -60,7 +61,16 @@ struct decl {
   struct decl *next;
 };
 
-typedef enum { STMT_BLOCK, STMT_DECL, STMT_EXPR, STMT_IF, STMT_PRINT, STMT_SECTION } stmt_t;
+typedef enum {
+  STMT_BLOCK,
+  STMT_DECL,
+  STMT_EXPR,
+  STMT_IF,
+  STMT_PRINT,
+  STMT_SECTION,
+  STMT_COMPUTE,
+  STMT_MOVE
+} stmt_t;
 
 struct stmt {
   stmt_t kind;

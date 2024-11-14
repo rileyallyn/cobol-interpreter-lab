@@ -85,7 +85,9 @@ struct expr *expr_create_float_literal(float value) {
 
 struct expr *expr_create_string_literal(const char *value) {
   struct expr *e = expr_create(EXPR_STRING_LITERAL, 0, 0);
-  e->string_literal = value;
+  char *dest = malloc(sizeof(*value));
+  strcpy(dest, value); // copy contents of source to dest
+  e->string_literal = dest;
   return e;
 }
 

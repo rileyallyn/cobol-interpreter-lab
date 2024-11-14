@@ -158,7 +158,7 @@ math_op         : TOKEN_ADD
 mathmaticalexpr : type_expr
                     {$$ = $1;}
                 | mathmaticalexpr math_op term
-                    {$$ = expr_create($2->kind, $1, $3);}
+                    
                 | container_expr
                     {$$ = $1;}
                 | type_expr container_expr
@@ -171,25 +171,28 @@ booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                 | mathmaticalexpr TOKEN_GREATER_THAN term
                     {$$ = expr_create(EXPR_GREATER_THAN, $1, $3);}
                 | mathmaticalexpr TOKEN_EQUAL term
-                    {$$ = expr_create(EXPR_EQUAL, $1, $3);}
+                    {$$ = expr_create(EXPR_EQUAL_EQUAL, $1, $3);}
                 ;
 type_expr       : TOKEN_IDENT
                     {$$ = expr_create_name(yytext);}
                 | TOKEN_INTEGER
                     {$$ = expr_create_integer_literal(atoi(yytext));}
                 | TOKEN_STRING
-                    {char *str = malloc(strlen(yytext) + 1); strcpy(str, yytext); $$ = expr_create_string_literal(str);}
+                    {$$ = expr_create_string_literal(yytext);}
                 | TOKEN_SPACE
                     {$$ = expr_create_integer_literal(0);}
                 | TOKEN_SUB TOKEN_IDENT
                 | ext_function
                 ;
 ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+
                 ;
 cbl_function    : TOKEN_DISPLAY
                     {$$ = stmt_create(STMT_PRINT, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | TOKEN_MOVE
+                    {$$ = stmt_create(STMT_MOVE, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | TOKEN_KEYWORD_COMPUTE
+                    {$$ = stmt_create(STMT_COMPUTE, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 if_branch       : TOKEN_IF booleanexpr 
                 ;
