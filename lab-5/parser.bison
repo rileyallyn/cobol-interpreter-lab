@@ -184,8 +184,8 @@ data_category   : TOKEN_ALPHANUMERIC
 categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
                 | TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
                 ;
-complete_category: data_category categry_contain
-                | data_category categry_contain complete_category
+complete_ctgry   : data_category categry_contain
+                | data_category categry_contain complete_ctgry
                 ;
 data_clause     : TOKEN_COMPUTATION_LEVEL_0 
                 | TOKEN_COMPUTATION_LEVEL_1 
@@ -194,21 +194,21 @@ data_clause     : TOKEN_COMPUTATION_LEVEL_0
                 | TOKEN_KEYWORD_VALUE
                 | TOKEN_KEYWORD_OCCURS
                 ;
-full_data_clause: data_clause data_clause
-                | data_clause
+full_data_clause: data_clause
+                | data_clause full_data_clause
                 ;
 simple_decl     : TOKEN_INTEGER TOKEN_IDENT TOKEN_DOT
                 ;
 complex_decl    : TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE category_spec TOKEN_DOT
                 ;
-category_spec   : complete_category
-                | complete_category data_clauses
+category_spec   : complete_ctgry
+                | complete_ctgry data_clauses
                 ;
 data_clauses    : full_data_clause
                 | full_data_clause TOKEN_INTEGER
                 ;
 data_declaration: simple_decl
-                | complex_decl
+                | complex_decl``
                 ;
 
 %%
