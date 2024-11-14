@@ -61,9 +61,6 @@ int yylex();
 %token TOKEN_WORKING_STORAGE
 %token TOKEN_EOF
 
-%left TOKEN_ADD TOKEN_SUB
-%left TOKEN_MULTIPLY TOKEN_DIVIDE
-%right TOKEN_EXPONENTIAL
 
 
 %%
@@ -95,47 +92,34 @@ simple_stmt     : cbl_func_stmt
                 | else_parts
                 | perform_stmt
                 ;
-cbl_func_stmt   : display_stmt
-                | move_stmt
-                | compute_stmt
+cbl_func_stmt   : cbl_function
+                | cbl_function op_parms 
+                | cbl_function assignment_stmt
+                | cbl_function op_parm assignment_stmt
                 ;
-display_stmt    : TOKEN_DISPLAY op_parms_list
+assignment_stmt : TOKEN_EQUAL op_parms
+                | TOKEN_KEYWORD_TO op_parms
                 ;
-move_stmt       : TOKEN_MOVE op_parms_list assignment_stmt
-                ;
-compute_stmt    : TOKEN_KEYWORD_COMPUTE op_parms_list assignment_stmt
-                ;
-assignment_stmt : TOKEN_EQUAL ext_function
-                | TOKEN_EQUAL op_parms_list
-                | TOKEN_KEYWORD_TO op_parms_list
-                ;
-op_parms_list   : op_parm
-                | op_parms_list op_parm
+op_parms        : op_parm
+                | op_parms op_parm
                 ;
 op_parm         : mathmaticalexpr
                 | booleanexpr
-                | type_expr
                 ;
 term            : mathmaticalexpr 
                 ;
-
 math_op         : TOKEN_ADD
                 | TOKEN_SUB
                 | TOKEN_MULTIPLY
                 | TOKEN_DIVIDE
                 | TOKEN_EXPONENTIAL
                 ;
-mathmaticalexpr : primary_expr
+mathmaticalexpr : type_expr
                 | mathmaticalexpr math_op term
+                | container_expr
+                | type_expr container_expr
                 ;
-full_contain    : simple_contain
-                | TOKEN_IDENT simple_contain
-                ;
-simple_contain  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
-                ;
-primary_expr    : type_expr
-                | full_contain
-                | TOKEN_SUB primary_expr
+container_expr  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                 | mathmaticalexpr TOKEN_GREATER_THAN term
@@ -145,8 +129,14 @@ type_expr       : TOKEN_IDENT
                 | TOKEN_INTEGER
                 | TOKEN_STRING
                 | TOKEN_SPACE
+                | TOKEN_SUB TOKEN_IDENT
+                | ext_function
                 ;
 ext_function    : TOKEN_KEYWORD_FUNCTION TOKEN_IDENT TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+                ;
+cbl_function    : TOKEN_DISPLAY
+                | TOKEN_MOVE
+                | TOKEN_KEYWORD_COMPUTE
                 ;
 if_branch       : TOKEN_IF booleanexpr 
                 ;
@@ -154,7 +144,7 @@ else_parts      : TOKEN_ELSE_IF booleanexpr simple_stmt
                 | TOKEN_ELSE simple_stmt
                 | TOKEN_END_IF
                 ;
-perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms_list
+perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
                 | TOKEN_END_PERFORM
                 ;
 data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
