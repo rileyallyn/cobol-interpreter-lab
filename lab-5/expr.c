@@ -149,6 +149,7 @@ void stmt_print(struct stmt *s) {
     break;
   // we haven't implemented sections yet
   case STMT_SECTION:
+    printf("section\n");
     break;
   }
 

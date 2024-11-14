@@ -145,14 +145,20 @@ term            : mathmaticalexpr
                     {$$ = $1;}
                 ;
 math_op         : TOKEN_ADD
+                    {$$ = expr_create(EXPR_ADD, NULL, NULL);}
                 | TOKEN_SUB
+                    {$$ = expr_create(EXPR_SUBTRACT, NULL, NULL);}
                 | TOKEN_MULTIPLY
+                    {$$ = expr_create(EXPR_MULTIPLY, NULL, NULL);}
                 | TOKEN_DIVIDE
+                    {$$ = expr_create(EXPR_DIVIDE, NULL, NULL);}
                 | TOKEN_EXPONENTIAL
+                    {$$ = expr_create(EXPR_EXPONENTIAL, NULL, NULL);}
                 ;
 mathmaticalexpr : type_expr
                     {$$ = $1;}
                 | mathmaticalexpr math_op term
+                    {$$ = expr_create($2->kind, $1, $3);}
                 | container_expr
                     {$$ = $1;}
                 | type_expr container_expr
@@ -161,8 +167,11 @@ mathmaticalexpr : type_expr
 container_expr  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
+                    {$$ = expr_create(EXPR_LESS_THAN, $1, $3);}
                 | mathmaticalexpr TOKEN_GREATER_THAN term
+                    {$$ = expr_create(EXPR_GREATER_THAN, $1, $3);}
                 | mathmaticalexpr TOKEN_EQUAL term
+                    {$$ = expr_create(EXPR_EQUAL, $1, $3);}
                 ;
 type_expr       : TOKEN_IDENT
                     {$$ = expr_create_name(yytext);}
