@@ -92,12 +92,13 @@ struct stmt *parser_result = 0;
     struct expr *expr;
     struct stmt *stmt;
     struct decl *decl;
+    struct type *type;
 }
 
-%type <stmt> statement_list statement section stop_run sect_data simple_stmt data_declaration cbl_func_stmt cbl_function
-%type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op
-%type <decl> assignment_stmt
-
+%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt cbl_function
+%type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op categry_contain category_value
+%type <decl> assignment_stmt simple_decl complex_decl data_declaration
+%type <type> data_category complete_category category_spec data_clause
 %%
 file            : statement_list
                     {parser_result = $1; return 0;}
@@ -116,7 +117,7 @@ statement       : section
                 | data_space
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | data_declaration
-                    {$$ = stmt_create(STMT_BLOCK, NULL, NULL, NULL, NULL, $1, NULL, NULL);}
+                    {$$ = stmt_create(STMT_DECL, $1, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | stop_run
                     {$$ = $1;}
                 ;
@@ -124,7 +125,7 @@ section         : type TOKEN_KEYWORD_DIVISION TOKEN_DOT
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 stop_run        : TOKEN_STOP TOKEN_RUN TOKEN_DOT
-                    {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
+                    {$$ = stmt_create(STMT_END_EXECUTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 sect_data       : TOKEN_PROGRAM_ID TOKEN_DOT TOKEN_IDENT TOKEN_DOT
                     {$$ = stmt_create(STMT_SECTION, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
@@ -139,12 +140,12 @@ simple_stmt     : cbl_func_stmt
                 | else_parts
                 | perform_stmt
                 ;
-cbl_func_stmt   : cbl_function
-                | cbl_function op_parms
+cbl_func_stmt   : cbl_function op_parms
                     {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
                 | cbl_function assignment_stmt
                     {$$ = stmt_create($1->kind, NULL, NULL, NULL, NULL, $2, NULL, NULL);}
                 | cbl_function op_parm assignment_stmt
+                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, $3, NULL, NULL);}
                 ;
 assignment_stmt : TOKEN_EQUAL op_parms
                     {$$ = decl_create(NULL, NULL, $2, NULL, NULL);}
@@ -185,6 +186,7 @@ mathmaticalexpr : type_expr
                     {$$ = $1; $1->right = $2;}
                 ;
 container_expr  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
+                    {$$ = $2;}
                 ;
 booleanexpr     : mathmaticalexpr TOKEN_LESS_THAN term
                     {$$ = expr_create(EXPR_LESS_THAN, $1, $3);}
@@ -201,6 +203,7 @@ type_expr       : TOKEN_IDENT
                     {$$ = expr_create_string_literal(yytext);}
                 | TOKEN_SPACE
                     {$$ = expr_create_integer_literal(0);}
+                // TODO: implment negative numbers
                 | TOKEN_SUB TOKEN_IDENT
                 | ext_function
                 ;
@@ -225,39 +228,55 @@ perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOK
                 ;
 data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
                 ;
-data_category   : TOKEN_ALPHANUMERIC 
+data_category   : TOKEN_ALPHANUMERIC
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL);}
                 | TOKEN_NUMERIC 
+                    {$$ = type_create(TYPE_NUMERIC, NULL);}
                 | TOKEN_SIGNED_NUMERIC
+                    {$$ = type_create(TYPE_SIGNED_NUMERIC, NULL);}
                 | TOKEN_IMPLIED_DECIMAL
+                    {$$ = type_create(TYPE_IMPLIED_DECIMAL, NULL);}
                 ;
 categry_contain : TOKEN_LEFT_PARENTHESIS TOKEN_INTEGER TOKEN_RIGHT_PARENTHESIS
-                | TOKEN_LEFT_PARENTHESIS TOKEN_IDENT TOKEN_RIGHT_PARENTHESIS
+                    {$$ = expr_create_integer_literal(atoi(yytext));}
                 ;
 complete_category: data_category categry_contain
+                    {$$ = $1; $1->limit = $2->integer_value;}
                 | data_category categry_contain complete_category
+                    {$1->limit = $2->integer_value; $1->subtype = $3; $$ = $1;}
                 ;
-data_clause     : TOKEN_COMPUTATION_LEVEL_0 
+data_clause     : TOKEN_COMPUTATION_LEVEL_0
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_0;}
                 | TOKEN_COMPUTATION_LEVEL_1 
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_1;}
                 | TOKEN_COMPUTATION_LEVEL_2 
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_2;}
                 | TOKEN_COMPUTATION_LEVEL_3
-                | TOKEN_KEYWORD_VALUE
-                | TOKEN_KEYWORD_OCCURS
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_3;}
+                |
                 ;
-full_data_clause: data_clause data_clause
-                | data_clause
-                ;
+                //TODO: implement levels
 simple_decl     : TOKEN_INTEGER TOKEN_IDENT TOKEN_DOT
+                    {$$ = decl_create(expr_create_name(yytext), NULL, NULL, NULL, NULL);}
                 ;
 complex_decl    : TOKEN_INTEGER TOKEN_IDENT TOKEN_PICTURE category_spec TOKEN_DOT
+                    {$$ = decl_create(expr_create_name(yytext), $4, NULL, NULL, NULL);}
+                ;
+category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
+                    {$$ = expr_create_integer_literal(atoi(yytext));}
+                | TOKEN_KEYWORD_OCCURS TOKEN_INTEGER
+                    {$$ = expr_create_integer_literal(atoi(yytext));}
+                |
                 ;
 category_spec   : complete_category
-                | complete_category data_clauses
-                ;
-data_clauses    : full_data_clause
-                | full_data_clause TOKEN_INTEGER
+                    {$$ = decl_create(NULL, $1, NULL, NULL, NULL);}
+                | complete_category data_clause category_value
+                    { $$ = decl_create(NULL, $1, NULL, NULL, $2);}
                 ;
 data_declaration: simple_decl
+                    {$$ = $1;}
                 | complex_decl
+                    {$$ = $1;}
                 ;
 %%
 void yyerror(const char* msg) {

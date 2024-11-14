@@ -153,6 +153,9 @@ void stmt_print(struct stmt *s) {
   case STMT_SECTION:
     printf("section\n");
     break;
+  case STMT_END_EXECUTION:
+    printf("stop run\n");
+    break;
   }
 
   stmt_print(s->next);
@@ -270,6 +273,8 @@ void stmt_evaluate(struct stmt *s) {
     stmt_evaluate(s->body);
     break;
   case STMT_SECTION:
+    break;
+  case STMT_END_EXECUTION:
     break;
   }
 

@@ -46,11 +46,20 @@ struct expr {
   const char *string_literal;
 };
 
-typedef enum { TYPE_ARRAY, TYPE_FLOAT, TYPE_INTEGER, TYPE_STRING } type_t;
+typedef enum {
+  TYPE_ALPHANUMERIC,
+  TYPE_IMPLIED_DECIMAL,
+  TYPE_NUMERIC,
+  TYPE_SIGNED_NUMERIC
+} type_t;
+
+typedef enum { LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3 } computation_level_t;
 
 struct type {
   type_t kind;
   struct type *subtype;
+  int limit;
+  computation_level_t level;
 };
 
 struct decl {
@@ -69,7 +78,8 @@ typedef enum {
   STMT_PRINT,
   STMT_SECTION,
   STMT_COMPUTE,
-  STMT_MOVE
+  STMT_MOVE,
+  STMT_END_EXECUTION,
 } stmt_t;
 
 struct stmt {
@@ -103,6 +113,8 @@ struct expr *scope_lookup(const char *name);
 void stmt_print(struct stmt *e);
 void decl_print(struct decl *d);
 void expr_print(struct expr *e);
+
+void ast_print(struct stmt *e);
 
 void stmt_evaluate(struct stmt *e);
 void decl_evaluate(struct decl *e);
