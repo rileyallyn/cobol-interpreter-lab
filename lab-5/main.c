@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
   if (yyparse() == 0) {
     printf("Parse successful: ");
-    if (parser_result != NULL) { 
+    if (parser_result != NULL) {
       stmt_print(parser_result);
       printf("\n");
       printf("Running the program, results in: ");

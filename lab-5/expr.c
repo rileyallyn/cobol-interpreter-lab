@@ -122,6 +122,8 @@ between the left and right nodes.
 void stmt_print(struct stmt *s) {
   if (!s)
     return;
+  
+  printf("stmt_print: %d\n", s->kind);
 
   switch (s->kind) {
   case STMT_DECL:
@@ -145,6 +147,12 @@ void stmt_print(struct stmt *s) {
     break;
   case STMT_BLOCK:
     stmt_print(s->body);
+    break;
+  case STMT_SECTION:
+    printf("section\n");
+    printf("body: %p\n", s->body);
+    printf("expr: %p\n", s->expr);
+    printf("next: %p\n", s->next);
     break;
   }
 
@@ -270,6 +278,8 @@ void stmt_evaluate(struct stmt *s) {
     break;
   case STMT_BLOCK:
     stmt_evaluate(s->body);
+    break;
+  case STMT_SECTION:
     break;
   }
 

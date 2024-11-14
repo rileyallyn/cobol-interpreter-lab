@@ -60,7 +60,7 @@ struct decl {
   struct decl *next;
 };
 
-typedef enum { STMT_BLOCK, STMT_DECL, STMT_EXPR, STMT_IF, STMT_PRINT } stmt_t;
+typedef enum { STMT_BLOCK, STMT_DECL, STMT_EXPR, STMT_IF, STMT_PRINT, STMT_SECTION } stmt_t;
 
 struct stmt {
   stmt_t kind;
