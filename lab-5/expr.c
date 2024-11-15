@@ -34,6 +34,12 @@ struct stmt *stmt_create(stmt_t kind, struct decl *decl, struct expr *init_expr,
                          struct stmt *body, struct stmt *else_body,
                          struct stmt *next) {
   struct stmt *s = malloc(sizeof(*s));
+  if (kind == STMT_COMPUTE) {
+    if (decl) {
+      printf("name: %s\n", decl->name->name);
+
+    }
+  }
   s->kind = kind;
   s->decl = decl;
   s->init_expr = init_expr;
@@ -137,6 +143,9 @@ void stmt_print(struct stmt *s) {
     printf(" then\n");
     stmt_print(s->body);
     printf("endif\n");
+    if (!s->else_body) { printf("\n"); break;}
+    printf("else ");
+    stmt_print(s->else_body);
     break;
   case STMT_PRINT:
     printf("print ");
@@ -149,6 +158,11 @@ void stmt_print(struct stmt *s) {
   // we haven't implemented sections yet
   case STMT_SECTION:
     printf("section\n");
+    break;
+  case STMT_COMPUTE:
+    printf("compute ");
+    decl_print(s->decl);
+    printf(";\n");
     break;
   case STMT_END_EXECUTION:
     printf("stop run\n");
@@ -175,15 +189,20 @@ void expr_print(struct expr *e) {
     close = "]";
   } else if (e->kind != EXPR_NAME && e->kind != EXPR_SUBSCRIPT &&
              e->kind != EXPR_INTEGER_LITERAL && e->kind != EXPR_FLOAT_LITERAL &&
-             e->kind != EXPR_STRING_LITERAL) {
+             e->kind != EXPR_STRING_LITERAL && e->kind != EXPR_CUSTOM_FUNCTION) {
     printf("(");
     close = ")";
+  } else if (e->kind == EXPR_CUSTOM_FUNCTION) {
+    printf("FUNCTION ");
   }
 
   expr_print(e->left);
 
   switch (e->kind) {
   case EXPR_NAME:
+    if (e->negative) {
+      printf("-");
+    }
     printf("%s", e->name);
     break;
   case EXPR_ARRAY:
@@ -234,6 +253,12 @@ void expr_print(struct expr *e) {
   case EXPR_STRING_LITERAL:
     printf("%s", e->string_literal);
     break;
+  case EXPR_EXPONENTIAL:
+    printf("**");
+    break;
+  case EXPR_CUSTOM_FUNCTION:
+    printf(" ");
+    break;
   }
 
   expr_print(e->right);
@@ -265,6 +290,7 @@ void stmt_evaluate(struct stmt *s) {
     break;
   case STMT_PRINT:
     stmt_evaluate_print(s->expr);
+    printf("\n");
     break;
   case STMT_BLOCK:
     stmt_evaluate(s->body);

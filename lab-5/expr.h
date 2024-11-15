@@ -34,6 +34,8 @@ typedef enum {
   EXPR_STRING_LITERAL,
   EXPR_SUBSCRIPT,
   EXPR_SUBTRACT,
+  EXPR_NULL,
+  EXPR_CUSTOM_FUNCTION
 } expr_t;
 
 struct expr {
@@ -44,6 +46,7 @@ struct expr {
   int integer_value;
   float float_value;
   const char *string_literal;
+  int negative;
 };
 
 typedef enum {

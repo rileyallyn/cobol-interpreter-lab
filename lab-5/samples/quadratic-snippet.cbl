@@ -30,4 +30,5 @@
                DISPLAY "Root: " root1
            ELSE
                DISPLAY "The equation has no real roots."
+           END-IF
        STOP RUN.
