@@ -24,7 +24,7 @@ void yyerror(const char*);
 
 extern int yylineno;
 
-struct stmt *parser_result = 0;
+extern struct stmt *parser_result = 0;
 
 %}
 
