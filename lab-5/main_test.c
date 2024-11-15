@@ -117,14 +117,10 @@ UTEST_F_TEARDOWN(InterpreterTestFile) {
   ASSERT_STREQ(actual_evaluate, expected_evaluate);
 }
 
-UTEST_F(InterpreterTestFile, print) {
-  utest_fixture->test_file = "samples/multiple_statements.c";
-  utest_fixture->print_file = "samples/multiple_statements_print.txt";
-  utest_fixture->evaluated_file = "samples/multiple_statements_evaluate.txt";
+UTEST_F(InterpreterTestFile, helloworld) {
+  utest_fixture->test_file = "samples/hello-world.cbl";
+  utest_fixture->print_file = "samples/hello-world_print.txt";
+  utest_fixture->evaluated_file = "samples/hello-world_evaluate.txt";
 }
 
-UTEST_F(InterpreterTestFile, program_file) {
-  utest_fixture->test_file = "samples/program.c";
-  utest_fixture->print_file = "samples/program_print.txt";
-  utest_fixture->evaluated_file = "samples/program_evaluate.txt";
-}
+

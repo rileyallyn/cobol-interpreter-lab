@@ -83,7 +83,6 @@ extern struct stmt *parser_result = 0;
 %token TOKEN_EXPONENTIAL
 %token TOKEN_DISPLAY
 
-
 %left TOKEN_ADD TOKEN_SUB
 %left TOKEN_MULTIPLY TOKEN_DIVIDE
 %left TOKEN_EXPONENTIAL
@@ -137,9 +136,10 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
 simple_stmt     : cbl_func_stmt
                     {$$ = $1;}
                 | if_branch
+                    {$$ = $1;}
                 | perform_stmt
                 ;
-cbl_func_stmt   : cbl_function ident assignment_stmt
+cbl_func_stmt   : cbl_function type_expr assignment_stmt
                     { $3->name = $2; $$= stmt_create($1->kind, $3, NULL, NULL, NULL, NULL, NULL, NULL);}
                 | cbl_function op_parms
                     {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
@@ -200,7 +200,6 @@ type_expr       : ident
                     {$$ = expr_create_string_literal(yytext);}
                 | TOKEN_SPACE
                     {$$ = expr_create_integer_literal(0);}
-                // TODO: implment negative numbers
                 | TOKEN_SUB ident
                     { $2->negative = 1; $$ = $2;}
                 | ext_function
@@ -271,7 +270,7 @@ category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
 category_spec   : complete_category
                     {$$ = decl_create(NULL, $1, NULL, NULL, NULL);}
                 | complete_category data_clause category_value
-                    { $$ = decl_create(NULL, $1, $3, NULL, $2);}
+                    { $1->level = $2->level; $$ = decl_create(NULL, $1, $3, NULL, NULL);}
                 ;
                 //TODO: implement levels
 simple_decl     : TOKEN_INTEGER ident TOKEN_DOT

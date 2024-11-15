@@ -159,6 +159,13 @@ void stmt_print(struct stmt *s) {
     decl_print(s->decl);
     printf(";\n");
     break;
+  case STMT_MOVE:
+    printf("move ");
+    expr_print(s->decl->name);
+    printf(" to ");
+    expr_print(s->decl->value);
+    printf(";\n");
+    break;
   case STMT_END_EXECUTION:
     printf("stop run\n");
     break;
