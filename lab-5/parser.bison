@@ -220,7 +220,9 @@ if_branch       : TOKEN_IF booleanexpr statement_list else_parts
                     {$$ = stmt_create(STMT_IF, NULL, $2, NULL, $4, $3, NULL, NULL);}
                 ;
 else_parts      : TOKEN_ELSE_IF booleanexpr simple_stmt
+                    {$$ = stmt_create(STMT_IF, NULL, $2, NULL, NULL, $3, NULL, NULL);}
                 | TOKEN_ELSE simple_stmt
+                    {$$ = stmt_create(STMT_IF, NULL, NULL, NULL, NULL, $2, NULL, NULL);}
                 | TOKEN_END_IF
                 ;
 perform_stmt    : TOKEN_PERFORM TOKEN_VARYING TOKEN_IDENT TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
