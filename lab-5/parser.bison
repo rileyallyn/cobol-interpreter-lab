@@ -95,7 +95,7 @@ struct stmt *parser_result = 0;
     struct type *type;
 }
 
-%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt cbl_function
+%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt cbl_function if_branch else_parts perform_stmt data_space
 %type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op categry_contain category_value
 %type <decl> assignment_stmt simple_decl complex_decl data_declaration
 %type <type> data_category complete_category category_spec data_clause
@@ -137,7 +137,6 @@ type            : TOKEN_KEYWORD_IDENTIFICATION
 simple_stmt     : cbl_func_stmt
                     {$$ = $1;}
                 | if_branch
-                | else_parts
                 | perform_stmt
                 ;
 cbl_func_stmt   : cbl_function op_parms
@@ -217,7 +216,8 @@ cbl_function    : TOKEN_DISPLAY
                 | TOKEN_KEYWORD_COMPUTE
                     {$$ = stmt_create(STMT_COMPUTE, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
-if_branch       : TOKEN_IF booleanexpr 
+if_branch       : TOKEN_IF booleanexpr statement_list else_parts
+                    {$$ = stmt_create(STMT_IF, NULL, $2, NULL, $4, $3, NULL, NULL);}
                 ;
 else_parts      : TOKEN_ELSE_IF booleanexpr simple_stmt
                 | TOKEN_ELSE simple_stmt
