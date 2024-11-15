@@ -327,6 +327,9 @@ void decl_evaluate(struct decl *d) {
   if (!d)
     return;
 
+  printf("decl_evaluate\n");
+  
+
   if (d->name->kind == EXPR_NAME && d->value->kind == EXPR_ARRAY) {
     struct expr *e = expr_sub_evaluate(d->value);
     scope_bind(d->name->name, e);

@@ -35,7 +35,9 @@ typedef enum {
   EXPR_SUBSCRIPT,
   EXPR_SUBTRACT,
   EXPR_NULL,
-  EXPR_CUSTOM_FUNCTION
+  EXPR_CUSTOM_FUNCTION,
+  EXPR_OCCURS,
+  EXPR_VALUE
 } expr_t;
 
 struct expr {
