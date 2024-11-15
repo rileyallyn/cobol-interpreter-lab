@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     if (parser_result != NULL) {
       stmt_print(parser_result);
       printf("\n");
-      printf("Running the program, results in: ");
+      printf("Running the program, results in: \n");
       stmt_evaluate(parser_result);
       printf("\n");
     }

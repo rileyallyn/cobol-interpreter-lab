@@ -16,7 +16,6 @@
        PROCEDURE DIVISION. *> program begins here
            DISPLAY "EQUATION: (1x^2) + 5x + 6 = 0" 
            COMPUTE discriminant = (b ** 2) - (4 * a * c)
-
            IF discriminant > 0
                COMPUTE square-root-discriminant = FUNCTION SQRT(discriminant)
                COMPUTE root1 = (-b + square-root-discriminant) / (2 * a)

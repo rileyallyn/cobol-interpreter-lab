@@ -71,6 +71,7 @@ struct decl {
   struct expr *name;
   struct type *type;
   struct expr *value;
+  struct expr *occurs;
   struct stmt *code;
   struct decl *next;
 };
@@ -122,6 +123,7 @@ void expr_print(struct expr *e);
 void ast_print(struct stmt *e);
 
 void stmt_evaluate(struct stmt *e);
+void stmt_evaluate_compute(struct stmt *e);
 void decl_evaluate(struct decl *e);
 void stmt_evaluate_print(struct expr *e);
 void decl_subscript_evaluate(struct expr *e, float value);
@@ -129,6 +131,7 @@ float expr_evaluate(struct expr *e);
 struct expr *expr_sub_evaluate(struct expr *e);
 float expr_subscript_evaluate(struct expr *e);
 const char *expr_string_evaluate(struct expr *e);
+float expr_evaluate_custom_function(struct expr *e);
 
 void expr_delete(struct expr *e);
 void close_parser();

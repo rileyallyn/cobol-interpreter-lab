@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 static struct SymbolMap *symbol_table = NULL;
 
@@ -34,12 +35,6 @@ struct stmt *stmt_create(stmt_t kind, struct decl *decl, struct expr *init_expr,
                          struct stmt *body, struct stmt *else_body,
                          struct stmt *next) {
   struct stmt *s = malloc(sizeof(*s));
-  if (kind == STMT_COMPUTE) {
-    if (decl) {
-      printf("name: %s\n", decl->name->name);
-
-    }
-  }
   s->kind = kind;
   s->decl = decl;
   s->init_expr = init_expr;
@@ -68,7 +63,7 @@ struct expr *expr_create(expr_t kind, struct expr *left, struct expr *right) {
 
 struct expr *expr_create_name(const char *value) {
   struct expr *e = expr_create(EXPR_NAME, 0, 0);
-  char *dest = malloc(sizeof(*value));
+  char *dest = malloc(strlen(value) + 1);
   strcpy(dest, value); // copy contents of source to dest
   e->name = dest;
   return e;
@@ -299,6 +294,9 @@ void stmt_evaluate(struct stmt *s) {
     break;
   case STMT_END_EXECUTION:
     break;
+  case STMT_COMPUTE:
+    stmt_evaluate_compute(s);
+    break;
   }
 
   stmt_evaluate(s->next);
@@ -323,13 +321,23 @@ void stmt_evaluate_print(struct expr *e) {
   stmt_evaluate_print(e->right);
 }
 
+void stmt_evaluate_compute(struct stmt *s) {
+  if (!s)
+    return;
+
+  if (s->kind == STMT_COMPUTE) {
+    decl_evaluate(s->decl);
+  }
+}
+
 void decl_evaluate(struct decl *d) {
   if (!d)
     return;
 
-  printf("decl_evaluate\n");
-  
-
+  if (!d->value) {
+    printf("decl_evaluate: no value\n");
+    return;
+  }
   if (d->name->kind == EXPR_NAME && d->value->kind == EXPR_ARRAY) {
     struct expr *e = expr_sub_evaluate(d->value);
     scope_bind(d->name->name, e);
@@ -446,6 +454,15 @@ float expr_subscript_evaluate(struct expr *e) {
   return expr_evaluate(a->left);
 }
 
+float expr_evaluate_custom_function(struct expr *e) {
+  if (strcmp(e->left->name, "SQRT") == 0) {
+    return sqrt(expr_evaluate(e->right));
+  } 
+
+  printf("runtime error: unknown custom function\n");
+  exit(1);
+}
+
 float expr_evaluate(struct expr *e) {
   /* Careful: Return zero on null pointer. */
   if (!e)
@@ -456,10 +473,14 @@ float expr_evaluate(struct expr *e) {
 
   float l = expr_evaluate(e->left);
   float r = expr_evaluate(e->right);
+  float result;
 
   switch (e->kind) {
   case EXPR_NAME:
     // Get the variable expression and then evaluate it.
+    if (e->negative) {
+      return -expr_evaluate(scope_lookup(e->name));
+    }
     return expr_evaluate(scope_lookup(e->name));
   case EXPR_ARRAY:
     printf("runtime error: array in expression\n");
@@ -499,9 +520,19 @@ float expr_evaluate(struct expr *e) {
   case EXPR_STRING_LITERAL:
     printf("runtime error: string in expression\n");
     exit(1);
+  case EXPR_VALUE:
+    return e->integer_value;
+  case EXPR_OCCURS:
+    return e->integer_value;
+  case EXPR_EXPONENTIAL:
+    return pow(l, r);
+  case EXPR_CUSTOM_FUNCTION:
+    result = expr_evaluate_custom_function(e);
+    return result;
   }
 
   return 0;
 }
+
 
 void close_parser() { destroySymbolMap(symbol_table); }

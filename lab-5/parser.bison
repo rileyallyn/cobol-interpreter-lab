@@ -262,9 +262,9 @@ data_clause     : TOKEN_COMPUTATION_LEVEL_0
                 |
                 ;
 category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
-                    {$$ = expr_create_integer_literal(atoi(yytext));}
+                    {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_VALUE;}
                 | TOKEN_KEYWORD_OCCURS TOKEN_INTEGER
-                   {$$ = expr_create_integer_literal(atoi(yytext));}
+                   {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_OCCURS;}
                 |
                    {$$ = expr_create(EXPR_NULL, NULL, NULL);}
                 ;
@@ -275,7 +275,7 @@ category_spec   : complete_category
                 ;
                 //TODO: implement levels
 simple_decl     : TOKEN_INTEGER ident TOKEN_DOT
-                    {$$ = decl_create($2, NULL, NULL, NULL, NULL);}
+                    {$$ = decl_create($2, NULL, expr_create(EXPR_NULL, NULL, NULL), NULL, NULL);}
                 ;
 complex_decl    : TOKEN_INTEGER ident TOKEN_PICTURE category_spec TOKEN_DOT
                     {$$ = decl_create($2, $4->type, $4->value, NULL, NULL);}
