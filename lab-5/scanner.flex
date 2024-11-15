@@ -1,5 +1,7 @@
 %{
 #include "token.h"
+
+void stripStringChar();
 %}
 %option warn
 %option nodefault
@@ -57,8 +59,8 @@ COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 \< { return TOKEN_LESS_THAN; }
 \= { return TOKEN_EQUAL;}
 
-"\""[^"]*"\""   { return TOKEN_STRING; }
-"\'"[^']*"\'"   { return TOKEN_STRING; }
+\"[^"]*\" { stripStringChar(); return TOKEN_STRING; }
+\'[^']*\' { stripStringChar(); return TOKEN_STRING; }
 "("             { return TOKEN_LEFT_PARENTHESIS; }
 ")"             { return TOKEN_RIGHT_PARENTHESIS; }
 {NAME} { return TOKEN_IDENT; }
@@ -67,3 +69,21 @@ COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 \. { return TOKEN_DOT; }
 %%
 int yywrap() { return 1; }
+
+void stripStringChar() {
+	int length = strlen(yytext);
+	int subLength = 1;
+	int i, j;
+	for (i = 1; i < length; i++) {
+		yytext[i - subLength] = yytext[i];
+		/*if (yytext[i] == '\\') {
+			if (nextIsEscapable(&yytext[i], subLength)) {
+				i += 1;
+				subLength += 1;
+			}
+		}*/
+	}
+	for (j = length - 1; j >= length - subLength - 1; j--) {
+		yytext[j] = 0;
+	}
+}

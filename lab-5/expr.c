@@ -1,4 +1,3 @@
-
 #include "expr.h"
 
 #include <stdio.h>
@@ -35,7 +34,6 @@ struct stmt *stmt_create(stmt_t kind, struct decl *decl, struct expr *init_expr,
                          struct stmt *body, struct stmt *else_body,
                          struct stmt *next) {
   struct stmt *s = malloc(sizeof(*s));
-
   s->kind = kind;
   s->decl = decl;
   s->init_expr = init_expr;
@@ -44,7 +42,6 @@ struct stmt *stmt_create(stmt_t kind, struct decl *decl, struct expr *init_expr,
   s->body = body;
   s->else_body = else_body;
   s->next = next;
-
   return s;
 }
 
@@ -85,8 +82,8 @@ struct expr *expr_create_float_literal(float value) {
 
 struct expr *expr_create_string_literal(const char *value) {
   struct expr *e = expr_create(EXPR_STRING_LITERAL, 0, 0);
-  char *dest = malloc(sizeof(*value));
-  strcpy(dest, value); // copy contents of source to dest
+  char *dest = malloc(strlen(value) + 1);
+  strcpy(dest, value);
   e->string_literal = dest;
   return e;
 }

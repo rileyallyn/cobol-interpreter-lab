@@ -2,14 +2,16 @@
 # The top level rule indicates how to link everything together into main
 
 main: main.o symbol_map.o expr.o scanner.o parser.o
-	gcc main.o symbol_map.o expr.o scanner.o parser.o -o interpreter.out -lm
+	gcc -g3 -Wall main.o symbol_map.o expr.o scanner.o parser.o -o interpreter.out -lm
 
 test: main_test.o symbol_map.o expr.o scanner.o parser.o
-	gcc main_test.o symbol_map.o expr.o scanner.o parser.o -o interpreter_test.out -lm
+	gcc -g3 -Wall main_test.o symbol_map.o expr.o scanner.o parser.o -o interpreter_test.out -lm
 
 parser_test: parser_test.o symbol_map.o expr.o scanner.o parser.o
-	gcc parser_test.o symbol_map.o expr.o scanner.o parser.o -o parser_test.out -lm
+	gcc -g3 -Wall parser_test.o symbol_map.o expr.o scanner.o parser.o -o parser_test.out -lm
 
+scanner_test: scanner_test.o symbol_map.o expr.o scanner.o parser.o
+	gcc -g3 -Wall scanner_test.o symbol_map.o expr.o scanner.o parser.o -o scanner_test.out -lm
 
 run_parser_test: parser_test
 	./parser_test.out
@@ -17,7 +19,10 @@ run_parser_test: parser_test
 run_interpreter_test: test
 	./interpreter_test.out
 
-run_test: run_parser_test run_interpreter_test
+run_scanner_test: scanner_test
+	./scanner_test.out
+
+run_tests: run_parser_test run_interpreter_test run_scanner_test
 
 # This pattern indicates that any .o file depends
 # upon the .c file of the same name, and all of the .h files.
