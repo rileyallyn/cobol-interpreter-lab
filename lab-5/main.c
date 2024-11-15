@@ -16,7 +16,7 @@ extern int yylex();
 
 /* Clunky: Declare the result of the parser from parser.bison */
 
-struct stmt *parser_result;
+extern struct stmt *parser_result;
 
 int main(int argc, char *argv[]) {
   printf("Lab 6 Example Interpreter Compiler\n");
