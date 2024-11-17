@@ -161,9 +161,9 @@ void stmt_print(struct stmt *s) {
     break;
   case STMT_MOVE:
     printf("move ");
-    expr_print(s->decl->name);
-    printf(" to ");
     expr_print(s->decl->value);
+    printf(" to ");
+    expr_print(s->decl->name);
     printf(";\n");
     break;
   case STMT_END_EXECUTION:
@@ -282,6 +282,7 @@ void stmt_evaluate(struct stmt *s) {
     return;
 
   switch (s->kind) {
+  case STMT_MOVE:
   case STMT_DECL:
     decl_evaluate(s->decl);
     break;
@@ -322,12 +323,14 @@ void stmt_evaluate_print(struct expr *e) {
 
 
   if (e->kind == EXPR_STRING_LITERAL) {
-      printf("%s", expr_string_evaluate(e));
-    } else if (e->kind == EXPR_FLOAT_LITERAL) {
-      printf("%f", expr_evaluate(e));
-  } else if (e->kind == EXPR_INTEGER_LITERAL ||
-               e->kind == EXPR_NAME || e->kind == EXPR_SUBSCRIPT) {
+    printf("%s", expr_string_evaluate(e));
+  } else if (e->kind == EXPR_FLOAT_LITERAL) {
+    printf("%f", expr_evaluate(e));
+  } else if (e->kind == EXPR_INTEGER_LITERAL || e->kind == EXPR_SUBSCRIPT) {
     printf("%.0f", expr_evaluate(e));
+  } else if (e->kind == EXPR_NAME) {
+    struct expr *value = scope_lookup(e->name);
+    stmt_evaluate_print(value);
   } else {
       printf("runtime error: print expression is not literal\n");
   }
@@ -356,9 +359,15 @@ void decl_evaluate(struct decl *d) {
     struct expr *e = expr_sub_evaluate(d->value);
     scope_bind(d->name->name, e);
   } else if (d->name->kind == EXPR_NAME) {
-    float value = expr_evaluate(d->value);
-    struct expr *e = expr_create_float_literal(value);
-    scope_bind(d->name->name, e);
+    if (d->value->kind != EXPR_STRING_LITERAL) {
+      float value = expr_evaluate(d->value);
+      struct expr *e = expr_create_float_literal(value);
+      scope_bind(d->name->name, e);
+    } else {
+      const char *value = expr_string_evaluate(d->value);
+      struct expr *e = expr_create_string_literal(value);
+      scope_bind(d->name->name, e);
+    }
   } else if (d->name->kind == EXPR_SUBSCRIPT) {
     float value = expr_evaluate(d->value);
     decl_subscript_evaluate(d->name, value);

@@ -3,7 +3,13 @@ section
 section
 section
 A = ();
+B = ();
+C = ();
 section
 move 1 to A;
+move 2 to B;
+move Hello, World! to C;
 print A;
+print B;
+print C;
 stop run

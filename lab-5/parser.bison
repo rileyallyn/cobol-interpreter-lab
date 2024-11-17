@@ -94,9 +94,9 @@ extern struct stmt *parser_result = 0;
     struct type *type;
 }
 
-%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt cbl_function if_branch else_parts else_branch perform_stmt data_space
+%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt if_branch else_parts else_branch perform_stmt data_space display_stmt assignment_stmt
 %type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op categry_contain category_value ident ext_function
-%type <decl> assignment_stmt simple_decl complex_decl data_declaration category_spec
+%type <decl> simple_decl complex_decl data_declaration category_spec
 %type <type> data_category complete_category data_clause
 %%
 file            : statement_list
@@ -139,15 +139,17 @@ simple_stmt     : cbl_func_stmt
                     {$$ = $1;}
                 | perform_stmt
                 ;
-cbl_func_stmt   : cbl_function type_expr assignment_stmt
-                    { $3->name = $2; $$= stmt_create($1->kind, $3, NULL, NULL, NULL, NULL, NULL, NULL);}
-                | cbl_function op_parms
-                    {$$ = stmt_create($1->kind, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
+cbl_func_stmt   : display_stmt
+                    {$$ = $1;}
+                | assignment_stmt
+                    {$$ = $1;}
                 ;
-assignment_stmt : TOKEN_EQUAL op_parms
-                    {$$ = decl_create(NULL, NULL, $2, NULL, NULL);}
-                | TOKEN_KEYWORD_TO op_parms
-                    {$$ = decl_create(NULL, NULL, $2, NULL, NULL);}
+display_stmt    : TOKEN_DISPLAY op_parms
+                    {$$ = stmt_create(STMT_PRINT, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
+assignment_stmt : TOKEN_KEYWORD_COMPUTE ident TOKEN_EQUAL op_parms
+                    {$$ = stmt_create(STMT_COMPUTE, decl_create($2, NULL, $4, NULL, NULL), NULL, NULL, NULL, NULL, NULL, NULL);}
+                | TOKEN_MOVE type_expr TOKEN_KEYWORD_TO ident
+                    {$$ = stmt_create(STMT_MOVE, decl_create($4, NULL, $2, NULL, NULL), NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 op_parms        : op_parm
                     {$$ = $1;}
@@ -208,13 +210,6 @@ type_expr       : ident
 ext_function    : TOKEN_KEYWORD_FUNCTION ident TOKEN_LEFT_PARENTHESIS ident TOKEN_RIGHT_PARENTHESIS
                     {$$ = expr_create(EXPR_CUSTOM_FUNCTION, $2, $4);}
                 ;
-cbl_function    : TOKEN_DISPLAY
-                    {$$ = stmt_create(STMT_PRINT, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-                | TOKEN_MOVE
-                    {$$ = stmt_create(STMT_MOVE, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-                | TOKEN_KEYWORD_COMPUTE
-                    {$$ = stmt_create(STMT_COMPUTE, NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-                ;
 if_branch       : TOKEN_IF booleanexpr statement_list else_parts
                     {$$ = stmt_create(STMT_IF, NULL, NULL, $2, NULL, $3, $4, NULL);}
                 ;
@@ -267,9 +262,7 @@ category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
                 |
                    {$$ = expr_create(EXPR_NULL, NULL, NULL);}
                 ;
-category_spec   : complete_category
-                    {$$ = decl_create(NULL, $1, NULL, NULL, NULL);}
-                | complete_category data_clause category_value
+category_spec   : complete_category data_clause category_value
                     { $1->level = $2->level; $$ = decl_create(NULL, $1, $3, NULL, NULL);}
                 ;
                 //TODO: implement levels
