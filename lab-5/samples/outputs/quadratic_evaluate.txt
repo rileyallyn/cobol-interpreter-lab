@@ -1,0 +1,4 @@
+EQUATION: (1x^2) + 5x + 6 = 0
+The equation has two distinct real roots: 
+Root 1: -2
+Root 2: -3

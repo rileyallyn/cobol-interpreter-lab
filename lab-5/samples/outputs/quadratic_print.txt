@@ -1,0 +1,35 @@
+section
+section
+section
+section
+a = ();
+b = ();
+c = ();
+discriminant = ();
+root1 = ();
+root2 = ();
+square-root-discriminant = ();
+section
+print EQUATION: (1x^2) + 5x + 6 = 0;
+compute discriminant = ((b**2)-(4*(a*c)));
+if (discriminant>0) then
+compute square-root-discriminant = FUNCTION SQRT discriminant;
+compute root1 = ((-b+square-root-discriminant)/(2*a));
+compute root2 = ((-b-square-root-discriminant)/(2*a));
+print The equation has two distinct real roots: ;
+print Root 1: root1;
+print Root 2: root2;
+endif
+else if  then
+if (discriminant==0) then
+compute root1 = (-b/(2*a));
+print The equation has one real root: ;
+print Root: root1;
+endif
+else if  then
+print The equation has no real roots.;
+endif
+
+endif
+
+stop run

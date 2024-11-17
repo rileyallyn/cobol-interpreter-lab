@@ -119,8 +119,14 @@ UTEST_F_TEARDOWN(InterpreterTestFile) {
 
 UTEST_F(InterpreterTestFile, helloworld) {
   utest_fixture->test_file = "samples/hello-world.cbl";
-  utest_fixture->print_file = "samples/hello-world_print.txt";
-  utest_fixture->evaluated_file = "samples/hello-world_evaluate.txt";
+  utest_fixture->print_file = "samples/outputs/hello-world_print.txt";
+  utest_fixture->evaluated_file = "samples/outputs/hello-world_evaluate.txt";
+}
+
+UTEST_F(InterpreterTestFile, quadratic) {
+  utest_fixture->test_file = "samples/quadratic-snippet.cbl";
+  utest_fixture->print_file = "samples/outputs/quadratic_print.txt";
+  utest_fixture->evaluated_file = "samples/outputs/quadratic_evaluate.txt";
 }
 
 
