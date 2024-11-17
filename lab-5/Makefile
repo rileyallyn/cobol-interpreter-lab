@@ -42,5 +42,5 @@ parser.c parser.h: parser.bison
 # clean causes all intermediate files to be deleted.
 
 clean:
-	rm -f parser.c parser.output parser.h scanner.c *.o interpreter.out interpreter_test.out test_evaluate.txt test_print.txt
+	rm -f parser.c parser.output parser.h scanner.c *.o interpreter.out interpreter_test.out test_evaluate.txt test_print.txt parser_test.out scanner_test.out
 

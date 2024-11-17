@@ -1,0 +1,21 @@
+section
+section
+section
+section
+A = 1;
+B = 2;
+section
+if (A>B) then
+print A is greater than B;
+endif
+else if (0==0) then
+if (A==B) then
+print A is equal to B;
+endif
+else if (0==0) then
+print B is greater than A;
+endif
+
+endif
+
+stop run

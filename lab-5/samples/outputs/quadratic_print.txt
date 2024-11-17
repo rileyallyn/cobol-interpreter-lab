@@ -2,9 +2,9 @@ section
 section
 section
 section
-a = ();
-b = ();
-c = ();
+a = 1;
+b = 5;
+c = 6;
 discriminant = ();
 root1 = ();
 root2 = ();
@@ -20,13 +20,13 @@ print The equation has two distinct real roots: ;
 print Root 1: root1;
 print Root 2: root2;
 endif
-else if  then
+else if (0==0) then
 if (discriminant==0) then
 compute root1 = (-b/(2*a));
 print The equation has one real root: ;
 print Root: root1;
 endif
-else if  then
+else if (0==0) then
 print The equation has no real roots.;
 endif
 

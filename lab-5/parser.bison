@@ -225,7 +225,7 @@ else_parts      : else_branch
 else_branch     : TOKEN_ELSE_IF booleanexpr simple_stmt
                     {$$ = stmt_create(STMT_IF, NULL, NULL, $2, NULL, $3, NULL, NULL);}
                 | TOKEN_ELSE simple_stmt
-                    {$$ = stmt_create(STMT_IF, NULL, NULL, NULL, NULL, $2, NULL, NULL);}
+                    {$$ = stmt_create(STMT_IF, NULL, NULL, expr_create(EXPR_EQUAL_EQUAL, expr_create_integer_literal(0), expr_create_integer_literal(0)), NULL, $2, NULL, NULL);}
                 | TOKEN_END_IF
                     {$$ = NULL;}
 perform_stmt    : TOKEN_PERFORM TOKEN_VARYING ident TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms

@@ -191,12 +191,14 @@ void expr_print(struct expr *e) {
     close = "]";
   } else if (e->kind != EXPR_NAME && e->kind != EXPR_SUBSCRIPT &&
              e->kind != EXPR_INTEGER_LITERAL && e->kind != EXPR_FLOAT_LITERAL &&
-             e->kind != EXPR_STRING_LITERAL && e->kind != EXPR_CUSTOM_FUNCTION) {
+             e->kind != EXPR_STRING_LITERAL && e->kind != EXPR_CUSTOM_FUNCTION &&
+             e->kind != EXPR_VALUE) {
     printf("(");
     close = ")";
   } else if (e->kind == EXPR_CUSTOM_FUNCTION) {
     printf("FUNCTION ");
   }
+
 
   expr_print(e->left);
 
@@ -246,6 +248,7 @@ void expr_print(struct expr *e) {
   case EXPR_LESS_THAN_OR_EQUAL:
     printf("<=");
     break;
+  case EXPR_VALUE:
   case EXPR_INTEGER_LITERAL:
     printf("%d", e->integer_value);
     break;
@@ -288,6 +291,10 @@ void stmt_evaluate(struct stmt *s) {
   case STMT_IF:
     if (expr_evaluate(s->expr)) {
       stmt_evaluate(s->body);
+    } else {
+      if (s->else_body) {
+        stmt_evaluate(s->else_body);
+      }
     }
     break;
   case STMT_PRINT:
@@ -409,6 +416,8 @@ const char *expr_string_evaluate(struct expr *e) {
   case EXPR_LESS_THAN:
   case EXPR_LESS_THAN_OR_EQUAL:
   case EXPR_INTEGER_LITERAL:
+  case EXPR_VALUE:
+  case EXPR_OCCURS:
   case EXPR_FLOAT_LITERAL:
     printf("runtime error: not a string expression\n");
     exit(1);
@@ -481,6 +490,7 @@ float expr_evaluate(struct expr *e) {
   float l = expr_evaluate(e->left);
   float r = expr_evaluate(e->right);
   float result;
+
 
   switch (e->kind) {
   case EXPR_NAME:
