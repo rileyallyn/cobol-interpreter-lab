@@ -148,7 +148,7 @@ display_stmt    : TOKEN_DISPLAY op_parms
                     {$$ = stmt_create(STMT_PRINT, NULL, NULL, $2, NULL, NULL, NULL, NULL);}
 assignment_stmt : TOKEN_KEYWORD_COMPUTE ident TOKEN_EQUAL op_parms
                     {$$ = stmt_create(STMT_COMPUTE, decl_create($2, NULL, $4, NULL, NULL), NULL, NULL, NULL, NULL, NULL, NULL);}
-                | TOKEN_MOVE type_expr TOKEN_KEYWORD_TO ident
+                | TOKEN_MOVE mathmaticalexpr TOKEN_KEYWORD_TO mathmaticalexpr
                     {$$ = stmt_create(STMT_MOVE, decl_create($4, NULL, $2, NULL, NULL), NULL, NULL, NULL, NULL, NULL, NULL);}
                 ;
 op_parms        : op_parm
@@ -253,7 +253,8 @@ data_clause     : TOKEN_COMPUTATION_LEVEL_0
                     {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_2;}
                 | TOKEN_COMPUTATION_LEVEL_3
                     {$$ = type_create(TYPE_ALPHANUMERIC, NULL); $$->level = LEVEL_3;}
-                |
+                | 
+                    {$$ = type_create(TYPE_ALPHANUMERIC, NULL);}
                 ;
 category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
                     {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_VALUE;}

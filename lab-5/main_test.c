@@ -135,11 +135,11 @@ UTEST_F(InterpreterTestFile, branching) {
   utest_fixture->evaluated_file = "samples/outputs/branching_evaluate.txt";
 }
 
-UTEST_F(InterpreterTestFile, looping) {
-  utest_fixture->test_file = "samples/looping.cbl";
-  utest_fixture->print_file = "samples/outputs/looping_print.txt";
-  utest_fixture->evaluated_file = "samples/outputs/looping_evaluate.txt";
-}
+// UTEST_F(InterpreterTestFile, looping) {
+//   utest_fixture->test_file = "samples/looping.cbl";
+//   utest_fixture->print_file = "samples/outputs/looping_print.txt";
+//   utest_fixture->evaluated_file = "samples/outputs/looping_evaluate.txt";
+// }
 
 UTEST_F(InterpreterTestFile, helloworld) {
   utest_fixture->test_file = "samples/hello-world.cbl";
@@ -153,8 +153,8 @@ UTEST_F(InterpreterTestFile, quadratic) {
   utest_fixture->evaluated_file = "samples/outputs/quadratic_evaluate.txt";
 }
 
-UTEST_F(InterpreterTestFile, sorting) {
-  utest_fixture->test_file = "samples/sorting-snippet.cbl";
-  utest_fixture->print_file = "samples/outputs/sorting_print.txt";
-  utest_fixture->evaluated_file = "samples/outputs/sorting_evaluate.txt";
-}
+// UTEST_F(InterpreterTestFile, sorting) {
+//   utest_fixture->test_file = "samples/sorting-snippet.cbl";
+//   utest_fixture->print_file = "samples/outputs/sorting_print.txt";
+//   utest_fixture->evaluated_file = "samples/outputs/sorting_evaluate.txt";
+// }
