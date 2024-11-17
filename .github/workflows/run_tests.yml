@@ -1,0 +1,21 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v2
+      # setup build-essentials & flex & bison
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential flex bison
+      - name: Run tests
+        run: |
+          make run_tests

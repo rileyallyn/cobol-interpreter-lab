@@ -31,7 +31,7 @@ UTEST(scanner, hello) {
     {TOKEN_KEYWORD_DIVISION, "DIVISION"},
     {TOKEN_DOT, "."},
     {TOKEN_DISPLAY, "DISPLAY"},
-    {TOKEN_STRING, "'Hello World!'"},
+    {TOKEN_STRING, "Hello World!"},
     {TOKEN_STOP, "STOP"},
     {TOKEN_RUN, "RUN"},
     {TOKEN_DOT, "."},
