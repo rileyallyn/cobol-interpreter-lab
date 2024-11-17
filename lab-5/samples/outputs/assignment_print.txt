@@ -1,0 +1,9 @@
+section
+section
+section
+section
+A = ();
+section
+move 1 to A;
+print A;
+stop run

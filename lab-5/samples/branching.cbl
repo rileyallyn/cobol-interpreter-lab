@@ -1,0 +1,9 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. BRANCHING.
+PROCEDURE DIVISION.
+    IF A > B THEN
+        DISPLAY 'A is greater than B'
+    ELSE
+        DISPLAY 'B is greater than A'
+    END-IF
+    STOP RUN.
