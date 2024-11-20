@@ -37,7 +37,8 @@ typedef enum {
   EXPR_NULL,
   EXPR_CUSTOM_FUNCTION,
   EXPR_OCCURS,
-  EXPR_VALUE
+  EXPR_VALUE,
+  EXPR_ARRAY_ITEM,
 } expr_t;
 
 struct expr {
@@ -55,7 +56,8 @@ typedef enum {
   TYPE_ALPHANUMERIC,
   TYPE_IMPLIED_DECIMAL,
   TYPE_NUMERIC,
-  TYPE_SIGNED_NUMERIC
+  TYPE_SIGNED_NUMERIC,
+  TYPE_ARRAY
 } type_t;
 
 typedef enum { LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3 } computation_level_t;
@@ -86,6 +88,7 @@ typedef enum {
   STMT_COMPUTE,
   STMT_MOVE,
   STMT_END_EXECUTION,
+  STMT_PERFORM
 } stmt_t;
 
 struct stmt {
@@ -124,11 +127,12 @@ void ast_print(struct stmt *e);
 
 void stmt_evaluate(struct stmt *e);
 void stmt_evaluate_compute(struct stmt *e);
-void decl_evaluate(struct decl *e);
 void stmt_evaluate_print(struct expr *e);
+void stmt_evaluate_perform(struct stmt *s);
+void decl_evaluate(struct decl *e);
 void decl_subscript_evaluate(struct expr *e, float value);
 float expr_evaluate(struct expr *e);
-struct expr *expr_sub_evaluate(struct expr *e);
+struct expr *expr_sub_evaluate(struct expr *e, struct type *t);
 float expr_subscript_evaluate(struct expr *e);
 const char *expr_string_evaluate(struct expr *e);
 float expr_evaluate_custom_function(struct expr *e);

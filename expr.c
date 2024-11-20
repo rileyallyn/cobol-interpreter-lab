@@ -169,6 +169,15 @@ void stmt_print(struct stmt *s) {
   case STMT_END_EXECUTION:
     printf("stop run\n");
     break;
+  case STMT_PERFORM:
+    decl_print(s->decl);
+    printf("; while ");
+    expr_print(s->expr);
+    printf(" do ");
+    expr_print(s->next_expr);
+    printf("\n");
+    printf("  ");
+    stmt_print(s->body);
   }
 
   stmt_print(s->next);
@@ -312,9 +321,31 @@ void stmt_evaluate(struct stmt *s) {
   case STMT_COMPUTE:
     stmt_evaluate_compute(s);
     break;
+  case STMT_PERFORM:
+    // evaluate the declaration
+    decl_evaluate(s->decl);
+    // now we can loop
+    stmt_evaluate_perform(s);
+    break;
   }
 
   stmt_evaluate(s->next);
+}
+
+void stmt_evaluate_perform(struct stmt *s) {
+    if (!s) return;
+
+    // Initial value has already been set by decl_evaluate in stmt_evaluate
+    
+    // Keep looping until the condition is met
+    while (!expr_evaluate(s->expr)) {
+        // Execute the loop body
+        stmt_evaluate(s->body);
+        
+        // Increment the loop variable
+        // s->next_expr contains the increment expression (name + BY value)
+        decl_evaluate(decl_create(s->decl->name, NULL, s->next_expr, NULL, NULL));
+    }
 }
 
 void stmt_evaluate_print(struct expr *e) {
@@ -328,6 +359,9 @@ void stmt_evaluate_print(struct expr *e) {
     printf("%f", expr_evaluate(e));
   } else if (e->kind == EXPR_INTEGER_LITERAL || e->kind == EXPR_SUBSCRIPT) {
     printf("%.0f", expr_evaluate(e));
+    if (e->kind == EXPR_SUBSCRIPT) {
+      return;
+    }
   } else if (e->kind == EXPR_NAME) {
     struct expr *value = scope_lookup(e->name);
     stmt_evaluate_print(value);
@@ -356,7 +390,7 @@ void decl_evaluate(struct decl *d) {
     return;
   }
   if (d->name->kind == EXPR_NAME && d->value->kind == EXPR_ARRAY) {
-    struct expr *e = expr_sub_evaluate(d->value);
+    struct expr *e = expr_sub_evaluate(d->value, d->type);
     scope_bind(d->name->name, e);
   } else if (d->name->kind == EXPR_NAME) {
     if (d->value->kind != EXPR_STRING_LITERAL) {
@@ -387,7 +421,7 @@ void decl_subscript_evaluate(struct expr *e, float value) {
     exit(1);
   }
 
-  if (e->left->kind != EXPR_NAME) {
+  if (e->left == NULL || e->left->kind != EXPR_NAME) {
     printf("runtime error: subscript has no name\n");
     exit(1);
   }
@@ -395,6 +429,10 @@ void decl_subscript_evaluate(struct expr *e, float value) {
   // Get array expresion
   struct expr *a = scope_lookup(e->left->name);
   float index = expr_evaluate(e->right);
+  if (!a) {
+    printf("runtime error: array not found\n");
+    exit(1);
+  }
 
   // Find the right offset
   while (index > 0) {
@@ -437,14 +475,20 @@ const char *expr_string_evaluate(struct expr *e) {
   return "";
 }
 
-struct expr *expr_sub_evaluate(struct expr *e) {
+struct expr *expr_sub_evaluate(struct expr *e, struct type *t) {
   /* Careful: Return zero on null pointer. */
   if (!e)
     return 0;
 
   // TODO evaluate each item in the array and save the result
-
-  return e;
+  if (!e->right) {
+    for (int i = 0; i < t->limit; i++) {
+      struct expr *temp = expr_create_float_literal(0);
+      e->right = expr_create(EXPR_ARRAY_ITEM, temp, e->right);
+    }
+    return e;
+  }
+  return expr_sub_evaluate(e->right, t);
 }
 
 /*
@@ -462,7 +506,7 @@ float expr_subscript_evaluate(struct expr *e) {
     exit(1);
   }
 
-  if (e->left->kind != EXPR_NAME) {
+  if (e->left == NULL || e->left->kind != EXPR_NAME) {
     printf("runtime error: subscript has no name\n");
     exit(1);
   }

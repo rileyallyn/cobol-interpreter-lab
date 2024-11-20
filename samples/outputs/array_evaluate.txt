@@ -1,0 +1,4 @@
+The first element is: 5
+The second element is: 10
+The third element is: 43
+The fourth element is: 101

@@ -1,0 +1,17 @@
+section
+section
+section
+section
+WS-ARRAY = ();
+WS-ARRAY-ROW = [];
+WS-ARRAY-INDEX = 1;
+section
+move 5 to WS-ARRAY-ROW[1];
+move 10 to WS-ARRAY-ROW[2];
+move 43 to WS-ARRAY-ROW[3];
+move 101 to WS-ARRAY-ROW[4];
+print The first element is: WS-ARRAY-ROW[1];
+print The second element is: WS-ARRAY-ROW[2];
+print The third element is: WS-ARRAY-ROW[3];
+print The fourth element is: WS-ARRAY-ROW[4];
+stop run

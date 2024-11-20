@@ -71,7 +71,7 @@ UTEST(parser, branching) {
 }
 
 UTEST(parser, looping) {
-  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10\0"; 
+  char string[] = "PERFORM VARYING I FROM 1 BY 1 UNTIL I > 10 DISPLAY I END-PERFORM\0"; 
   YY_BUFFER_STATE buffer = yy_scan_buffer(string, sizeof(string));
 
   yylineno = 1;

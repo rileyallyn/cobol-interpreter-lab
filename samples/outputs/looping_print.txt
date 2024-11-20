@@ -1,0 +1,9 @@
+section
+section
+section
+section
+WS-I = 1;
+section
+WS-I = 1; while (WS-I>10) do (WS-I+1)
+  print WS-I;
+stop run

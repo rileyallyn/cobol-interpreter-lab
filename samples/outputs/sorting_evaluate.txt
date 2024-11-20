@@ -1,15 +1,15 @@
 Original Array Contents:
 ---------------------
-Element +0001: 30        
-Element +0002: 10        
-Element +0003: 50        
-Element +0004: 20        
-Element +0005: 40        
- 
+Element 1.000000: 30
+Element 2.000000: 10
+Element 3.000000: 50
+Element 4.000000: 20
+Element 5.000000: 40
+
 Sorted Array Contents:
 --------------------
-Element +0001: 10        
-Element +0002: 20        
-Element +0003: 30        
-Element +0004: 40        
-Element +0005: 50
+Element 1.000000: 10
+Element 2.000000: 20
+Element 3.000000: 30
+Element 4.000000: 40
+Element 5.000000: 50

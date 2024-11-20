@@ -94,8 +94,8 @@ extern struct stmt *parser_result = 0;
     struct type *type;
 }
 
-%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt if_branch else_parts else_branch perform_stmt data_space display_stmt assignment_stmt
-%type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op categry_contain category_value ident ext_function
+%type <stmt> statement_list statement section stop_run sect_data simple_stmt cbl_func_stmt if_branch else_parts else_branch perform_stmt data_space display_stmt assignment_stmt perform_header
+%type <expr> mathmaticalexpr booleanexpr term op_parm container_expr type_expr op_parms math_op categry_contain category_value ident ext_function 
 %type <decl> simple_decl complex_decl data_declaration category_spec
 %type <type> data_category complete_category data_clause
 %%
@@ -138,6 +138,7 @@ simple_stmt     : cbl_func_stmt
                 | if_branch
                     {$$ = $1;}
                 | perform_stmt
+                    {$$ = $1;}
                 ;
 cbl_func_stmt   : display_stmt
                     {$$ = $1;}
@@ -182,7 +183,7 @@ mathmaticalexpr : type_expr
                 | container_expr
                     {$$ = $1;}
                 | type_expr container_expr
-                    {$$ = $1; $1->right = $2;}
+                    { $$ = expr_create(EXPR_SUBSCRIPT, $1, $2);}
                 ;
 container_expr  : TOKEN_LEFT_PARENTHESIS mathmaticalexpr TOKEN_RIGHT_PARENTHESIS
                     {$$ = $2;}
@@ -223,8 +224,14 @@ else_branch     : TOKEN_ELSE_IF booleanexpr simple_stmt
                     {$$ = stmt_create(STMT_IF, NULL, NULL, expr_create(EXPR_EQUAL_EQUAL, expr_create_integer_literal(0), expr_create_integer_literal(0)), NULL, $2, NULL, NULL);}
                 | TOKEN_END_IF
                     {$$ = NULL;}
-perform_stmt    : TOKEN_PERFORM TOKEN_VARYING ident TOKEN_KEYWORD_FROM TOKEN_INTEGER TOKEN_KEYWORD_BY TOKEN_INTEGER TOKEN_UNTIL op_parms
-                | TOKEN_END_PERFORM
+perform_stmt    : perform_header statement_list TOKEN_END_PERFORM
+                    {$1->body = $2; $$=$1;}
+                ;
+                // for (int i = 0; i < 10 i++)
+perform_header  : TOKEN_PERFORM TOKEN_VARYING ident TOKEN_KEYWORD_FROM type_expr TOKEN_KEYWORD_BY type_expr TOKEN_UNTIL op_parms
+                    {
+                        $$ = stmt_create(STMT_PERFORM, decl_create($3, NULL, $5, NULL, NULL), NULL, $9, expr_create(EXPR_ADD, $3, $7), NULL, NULL, NULL);
+                    }
                 ;
 data_space      : TOKEN_WORKING_STORAGE TOKEN_KEYWORD_SECTION TOKEN_DOT
                 ;
@@ -259,12 +266,17 @@ data_clause     : TOKEN_COMPUTATION_LEVEL_0
 category_value  : TOKEN_KEYWORD_VALUE TOKEN_INTEGER
                     {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_VALUE;}
                 | TOKEN_KEYWORD_OCCURS TOKEN_INTEGER
-                   {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_OCCURS;}
+                    {$$ = expr_create_integer_literal(atoi(yytext)); $$->kind = EXPR_OCCURS;}
                 |
                    {$$ = expr_create(EXPR_NULL, NULL, NULL);}
                 ;
 category_spec   : complete_category data_clause category_value
-                    { $1->level = $2->level; $$ = decl_create(NULL, $1, $3, NULL, NULL);}
+                    { 
+                        if ($3->kind == EXPR_OCCURS) {
+                            $1->limit = $3->integer_value;
+                            $3->kind = EXPR_ARRAY;
+                        }
+                        $1->level = $2->level; $$ = decl_create(NULL, $1, $3, NULL, NULL);}
                 ;
                 //TODO: implement levels
 simple_decl     : TOKEN_INTEGER ident TOKEN_DOT

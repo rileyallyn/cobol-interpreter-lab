@@ -1,0 +1,38 @@
+section
+section
+section
+section
+WS-SORT-AREA = ();
+WS-SORT-TABLE = ();
+WS-SORT-ROW = [];
+WS-TEMP-ROW = ();
+WS-ROW-MAX = 100;
+WS-SORT-MAX = ();
+WS-I = ();
+WS-J = ();
+WS-INDEX = ();
+section
+move 30 to WS-SORT-ROW[1];
+move 10 to WS-SORT-ROW[2];
+move 50 to WS-SORT-ROW[3];
+move 20 to WS-SORT-ROW[4];
+move 40 to WS-SORT-ROW[5];
+move 5 to WS-SORT-MAX;
+print Original Array Contents:;
+print ---------------------;
+WS-INDEX = 1; while (WS-INDEX>WS-SORT-MAX) do (WS-INDEX+1)
+  print Element WS-INDEX: WS-SORT-ROW[WS-INDEX];
+print ;
+WS-I = 1; while (WS-I>(WS-SORT-MAX-1)) do (WS-I+1)
+  WS-J = 1; while (WS-J>(WS-SORT-MAX-WS-I)) do (WS-J+1)
+  if (WS-SORT-ROW[WS-J]>WS-SORT-ROW[(WS-J+1)]) then
+move WS-SORT-ROW[WS-J] to WS-TEMP-ROW;
+move WS-SORT-ROW[(WS-J+1)] to WS-SORT-ROW[WS-J];
+move WS-TEMP-ROW to WS-SORT-ROW[(WS-J+1)];
+endif
+
+print Sorted Array Contents:;
+print --------------------;
+WS-INDEX = 1; while (WS-INDEX>WS-SORT-MAX) do (WS-INDEX+1)
+  print Element WS-INDEX: WS-SORT-ROW[WS-INDEX];
+stop run
