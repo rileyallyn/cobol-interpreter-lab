@@ -66,6 +66,8 @@ COMP-3 { return TOKEN_COMPUTATION_LEVEL_3; }
 {NAME} { return TOKEN_IDENT; }
 {DIGIT} { return TOKEN_INTEGER; }
 
+<<EOF>> { return TOKEN_EOF; }
+
 \. { return TOKEN_DOT; }
 %%
 int yywrap() { return 1; }
